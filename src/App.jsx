@@ -1,32 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import AnalyticsPage from './components/AnalyticsPage';
+import BCCard from './components/BCCard';
 import data from './assets/data.json';
 
 const ZOOM_THRESHOLD = 15;
 
-function MarkersWithZoom({ businessCenters, zoom }) {
+function MarkersWithZoom({ businessCenters, zoom, onSelect }) {
   if (zoom < ZOOM_THRESHOLD) return null;
 
   return (
     <>
       {businessCenters.map(bc => (
-        <Marker key={bc.id} position={bc.coords}>
-          <Popup>{bc.name}</Popup>
+        <Marker key={bc.id} position={bc.coords} eventHandlers={{
+          click: () => onSelect(bc)
+        }}>
+          <Popup>{bc.business_center_name}</Popup>
         </Marker>
       ))}
     </>
   );
 }
 
-function ZoomAwareMap({ businessCenters }) {
+function ZoomAwareMap({ businessCenters, onSelect }) {
   const [zoom, setZoom] = useState(12);
 
   function ZoomListener() {
     useMapEvents({
-      zoomend: (e) => {
-        setZoom(e.target.getZoom());
-      },
+      zoomend: (e) => setZoom(e.target.getZoom())
     });
     return null;
   }
@@ -35,7 +36,7 @@ function ZoomAwareMap({ businessCenters }) {
     <MapContainer center={[43.25, 76.95]} zoom={12} style={{ height: 'calc(100vh - 50px)', width: '100%' }}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <ZoomListener />
-      <MarkersWithZoom businessCenters={businessCenters} zoom={zoom} />
+      <MarkersWithZoom businessCenters={businessCenters} zoom={zoom} onSelect={onSelect} />
     </MapContainer>
   );
 }
@@ -43,6 +44,7 @@ function ZoomAwareMap({ businessCenters }) {
 export default function App() {
   const { businessCenters } = data;
   const [activeTab, setActiveTab] = useState('map');
+  const [selectedBC, setSelectedBC] = useState(null); // 🎯
 
   return (
     <div className="app-container">
@@ -61,9 +63,14 @@ export default function App() {
         </button>
       </nav>
 
-      <main className="content">
+      <main className="relative">
         {activeTab === 'map' ? (
-          <ZoomAwareMap businessCenters={businessCenters} />
+          <>
+            <ZoomAwareMap businessCenters={businessCenters} onSelect={setSelectedBC} />
+            {selectedBC && (
+              <BCCard bc={selectedBC} onClose={() => setSelectedBC(null)} />
+            )}
+          </>
         ) : (
           <AnalyticsPage />
         )}
