@@ -178,7 +178,7 @@ function ZoneStatsPanel({ selectedZone, businessCenters }) {
 
   const totalCompanies = filteredBCs.reduce((sum, bc) => sum + bc.companies.length, 0);
   const ktClients = filteredBCs.reduce((sum, bc) => 
-    sum + filteredBCs.companies.filter(company => company.is_kt_client).length, 0
+    sum + bc.companies.filter(company => company.is_kt_client).length, 0
   );
   const totalRevenue = filteredBCs.reduce((sum, bc) => 
     sum + bc.companies.reduce((companySum, company) => companySum + (company.accruals || 0), 0), 0
@@ -782,22 +782,4 @@ function MapPage() {
                   const uniqueServices = [...new Set(allServices)];
                   
                   return uniqueServices.map((service, index) => (
-                    `<label key="${index}" style="display: flex; align-items: center; padding: 8px; border: 1px solid #e5e7eb; border-radius: 4px; cursor: pointer; ${selectedServices.includes(service) ? 'background-color: #eff6ff; border-color: #3b82f6;' : ''}">
-                      <input 
-                        type="checkbox" 
-                        ${selectedServices.includes(service) ? 'checked' : ''}
-                        onchange="window.toggleServiceSelection('${service.replace(/'/g, "\\'")}')"
-                        style="margin-right: 8px;"
-                      />
-                      <span style="font-size: 14px; color: #374151;">${service}</span>
-                    </label>`
-                  )).join('');
-                })()}
-              </div>
-            </div>
-            
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-              <button 
-                onClick={closeServiceFilter}
-                style={{
-                  padding:
+                    `<label key="${index}" style="display: flex; align-items
