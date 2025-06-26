@@ -39,6 +39,29 @@ const defaultIcon = new L.Icon({
   popupAnchor: [1, -34],
   shadowSize: [41, 41]
 });
+const lowPenetrationIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+function getPenetrationRate(bc) {
+  const total = bc.companies.length;
+  const kt = bc.companies.filter(c => c.is_kt_client).length;
+  return total === 0 ? 0 : (kt / total) * 100;
+}
+
+function getIconForBusinessCenter(bc) {
+  const penetration = getPenetrationRate(bc);
+  if (penetration > 0 && penetration < 30) {
+    return lowPenetrationIcon;
+  }
+  return defaultIcon;
+}
+
 
 function Navigation() {
   const location = useLocation();
@@ -308,7 +331,7 @@ function MapInteractions({
 
       filteredBusinessCenters.forEach(bc => {
         const marker = L.marker([bc.latitude, bc.longitude], {
-          icon: defaultIcon
+          icon: getIconForBusinessCenter(bc)
         });
 
         marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick));
@@ -320,7 +343,7 @@ function MapInteractions({
       // Add individual markers
       filteredBusinessCenters.forEach(bc => {
         const marker = L.marker([bc.latitude, bc.longitude], {
-          icon: defaultIcon
+          icon: getIconForBusinessCenter(bc)
         });
 
         marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick));
