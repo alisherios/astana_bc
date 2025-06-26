@@ -24,20 +24,20 @@ L.Icon.Default.mergeOptions({
 const ktClientIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize:,
-  iconAnchor:,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
   popupAnchor: [1, -34],
-  shadowSize:
+  shadowSize: [41, 41]
 } );
 
 // Default icon for regular business centers
 const defaultIcon = new L.Icon({
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize:,
-  iconAnchor:,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
   popupAnchor: [1, -34],
-  shadowSize:
+  shadowSize: [41, 41]
 } );
 
 function Navigation() {
@@ -287,7 +287,7 @@ function MapInteractions({
       // Create marker cluster group
       markersRef.current = L.markerClusterGroup({
         iconCreateFunction: function(cluster) {
-          const count = cluster.getChildCount();
+          const count = cluster.getChildChildCount();
           let c = ' marker-cluster-';
           if (count < 10) {
             c += 'small';
@@ -782,4 +782,4 @@ function MapPage() {
                   const uniqueServices = [...new Set(allServices)];
                   
                   return uniqueServices.map((service, index) => (
-                    `<label key="${index}" style="display: flex; align-items: center; padding: 8px; border: 1px solid #e5e7eb; border-radius: 4px; cursor:
+                    `<label key="${index}" style="display: flex; align-items: center; padding: 8px; border: 1px solid #e5e7eb; border-radius: 4px; cursor: pointer; ${selectedServices.includes
