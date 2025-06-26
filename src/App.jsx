@@ -518,23 +518,26 @@ function OrganizationCard({ organization, isOpen, onClose }) {
 }
 
 function renderCompanyPopup(businessCenter, onOrganizationClick, onBusinessCenterClick) {
-  // Create a unique ID for this popup
   const popupId = `popup-${businessCenter.business_center_name.replace(/\s+/g, '-').toLowerCase()}`;
-  
-  // Store the callback functions globally so they can be accessed from the popup
+
+  const companies = businessCenter.companies || [];
+  const ktClientsCount = companies.filter(c => c.is_kt_client).length;
+  const nonKtClientsCount = companies.length - ktClientsCount;
+
   window[`${popupId}-org-callback`] = onOrganizationClick;
   window[`${popupId}-bc-callback`] = onBusinessCenterClick;
-  
+
   return `
     <div style="min-width: 300px; max-width: 400px;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h3 style="margin: 0; font-weight: bold; font-size: 16px;">
-          ${businessCenter.business_center_name}
-        </h3>
-        <p style="margin: 4px 0 0 0; font-size: 13px; color: #4b5563;">
-  Клиенты: <strong style="color: #2563eb;">КТ: ${ktClientsCount}</strong> | <strong style="color: #6b7280;">не КТ: ${nonKtClientsCount}</strong>
-</p>
-
+        <div>
+          <h3 style="margin: 0; font-weight: bold; font-size: 16px;">
+            ${businessCenter.business_center_name}
+          </h3>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #4b5563;">
+            Клиенты: <strong style="color: #2563eb;">КТ: ${ktClientsCount}</strong> | <strong style="color: #6b7280;">не КТ: ${nonKtClientsCount}</strong>
+          </p>
+        </div>
         <button onclick="window['${popupId}-bc-callback'](${JSON.stringify(businessCenter).replace(/"/g, '&quot;')}); return false;"
                 style="background-color: #3b82f6; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer;"
                 onmouseover="this.style.backgroundColor='#2563eb'"
@@ -546,7 +549,7 @@ function renderCompanyPopup(businessCenter, onOrganizationClick, onBusinessCente
         <strong>Район:</strong> ${businessCenter.district}<br/>
         <strong>Назначение:</strong> ${businessCenter.building_purpose}
       </p>
-      
+
       <div style="max-height: 300px; overflow-y: auto;">
         <h4 style="margin: 10px 0 5px 0; font-size: 14px; font-weight: bold;">
           Компании (${businessCenter.companies.length}):
@@ -577,6 +580,7 @@ function renderCompanyPopup(businessCenter, onOrganizationClick, onBusinessCente
     </div>
   `;
 }
+
 
 function MapPage() {
   const [businessCenters, setBusinessCenters] = useState([]);
