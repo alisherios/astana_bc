@@ -296,6 +296,14 @@
                 "is_kt_client": true,
                 "accruals": 444508.1517856901,
                 "services": []
+            },
+            {
+                "organization_name": "Engineering Services, ТОО",
+                "bin": "130440013597",
+                "address": "Максут Нарикбаев улица, 2",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -332,6 +340,14 @@
                 "address": "Аскар Токпанов улица, 33",
                 "is_kt_client": true,
                 "accruals": 883.92857143,
+                "services": []
+            },
+            {
+                "organization_name": "Cerebro Innovation Technologies",
+                "bin": "190840001310",
+                "address": "Аскар Токпанов улица, 10",
+                "is_kt_client": true,
+                "accruals": 36830.35714286,
                 "services": []
             }
         ]
@@ -379,6 +395,14 @@
                 "address": "Чингиз Айтматов улица, 46/1",
                 "is_kt_client": true,
                 "accruals": 4048982.14285716,
+                "services": []
+            },
+            {
+                "organization_name": "Ledi Sharm",
+                "bin": "710930450601",
+                "address": "Кенесары улица, 40",
+                "is_kt_client": true,
+                "accruals": 6912.44642856,
                 "services": []
             }
         ]
@@ -452,6 +476,14 @@
                 "is_kt_client": true,
                 "accruals": 167323.80357147,
                 "services": []
+            },
+            {
+                "organization_name": "⁠Rox Doscar Astana, официальный дилер ROX",
+                "bin": "250140019689",
+                "address": "Сарайшык улица, 34а",
+                "is_kt_client": true,
+                "accruals": 212558.16964285,
+                "services": []
             }
         ]
     },
@@ -495,6 +527,14 @@
                 "is_kt_client": true,
                 "accruals": 1354165.482142751,
                 "services": []
+            },
+            {
+                "organization_name": "Aureae Manus",
+                "bin": "60216651029",
+                "address": "Шакарим Кудайбердыулы проспект, 72",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -504,7 +544,16 @@
         "latitude": 51.12215459854875,
         "longitude": 71.42926142885719,
         "building_purpose": "Бизнес-центр",
-        "companies": []
+        "companies": [
+            {
+                "organization_name": "Fortuna&Fixup, сервисный центр",
+                "bin": "780326300905",
+                "address": "Кенесары улица, 40",
+                "is_kt_client": true,
+                "accruals": 388929.9285714201,
+                "services": []
+            }
+        ]
     },
     {
         "business_center_name": "Alcato, бизнес-центр",
@@ -530,6 +579,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Kazgeomaster, ТОО",
+                "bin": "220440028752",
+                "address": "Караменде би Шакаулы улица, 4",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -578,6 +635,14 @@
                     "Абонплата городской Eth VPN (расчетный)",
                     "12 зона сеть МТ-С (сеть Алтел)"
                 ]
+            },
+            {
+                "organization_name": "ТРАНСЛИФТ ВОСТОК СЕРВИС, ТОО, монтажная компания",
+                "bin": "130840008317",
+                "address": "Кенесары улица, 40",
+                "is_kt_client": true,
+                "accruals": 6696.428571439998,
+                "services": []
             }
         ]
     },
@@ -615,6 +680,14 @@
                 "address": "Мангилик Ел проспект, 30",
                 "is_kt_client": true,
                 "accruals": 811472.8660715099,
+                "services": []
+            },
+            {
+                "organization_name": "Dmistral, ТОО",
+                "bin": "141040025243",
+                "address": "Аскар Токпанов улица, 10",
+                "is_kt_client": false,
+                "accruals": null,
                 "services": []
             }
         ]
@@ -663,6 +736,14 @@
                 "is_kt_client": true,
                 "accruals": 1747767.86607143,
                 "services": []
+            },
+            {
+                "organization_name": "Тәп-тәтті, кондитерская",
+                "bin": "130140011649",
+                "address": "Габит Мусрепов улица, 13",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -695,6 +776,14 @@
                 "address": "Бауыржан Момышулы проспект, 2/1",
                 "is_kt_client": true,
                 "accruals": 207050792.633918,
+                "services": []
+            },
+            {
+                "organization_name": "Эко-Аналит, ТОО, компания",
+                "bin": "120740013635",
+                "address": "Константин Циолковский улица, 4Б",
+                "is_kt_client": false,
+                "accruals": null,
                 "services": []
             }
         ]
@@ -729,6 +818,14 @@
                 "is_kt_client": true,
                 "accruals": 139639.60714284,
                 "services": []
+            },
+            {
+                "organization_name": "LIARTI JEWELRY, ювелирный салон",
+                "bin": "171140029295",
+                "address": "Кенесары улица, 40",
+                "is_kt_client": true,
+                "accruals": 23307.88392849,
+                "services": []
             }
         ]
     },
@@ -748,6 +845,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Lavanda, студия красоты",
+                "bin": "851204401994",
+                "address": "Кенесары улица, 40",
+                "is_kt_client": true,
+                "accruals": 4665.90178572,
+                "services": []
             }
         ]
     },
@@ -867,6 +972,14 @@
                     "Аренда дополнительного 1 Гбит/с Ethernet-порта",
                     "Регистрация блока из 4/8/16/32/64/128/256 IP-адресовnew"
                 ]
+            },
+            {
+                "organization_name": "Orta, бизнес-центр",
+                "bin": "220340900419",
+                "address": "Мангилик Ел проспект, 41/1",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -932,6 +1045,14 @@
                     "Абонплата за мобильный номер ALTEL GSM",
                     "12 зона сеть МТ-С (сеть Алтел)"
                 ]
+            },
+            {
+                "organization_name": "Твой Logo",
+                "bin": "900311451327",
+                "address": "Шакарим Кудайбердыулы проспект, 26",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -979,6 +1100,14 @@
                 "address": "Аскар Токпанов улица, 27",
                 "is_kt_client": true,
                 "accruals": 20892.85714278,
+                "services": []
+            },
+            {
+                "organization_name": "Invecon Engineering",
+                "bin": "181240014649",
+                "address": "Максут Нарикбаев улица, 2",
+                "is_kt_client": false,
+                "accruals": null,
                 "services": []
             }
         ]
@@ -1129,6 +1258,14 @@
                 "is_kt_client": true,
                 "accruals": 90451.99107143,
                 "services": []
+            },
+            {
+                "organization_name": "VisVal, техцентр, ТОО Лукаш",
+                "bin": "110740001085",
+                "address": "Габит Мусрепов улица, 15а",
+                "is_kt_client": true,
+                "accruals": 7603.68749998,
+                "services": []
             }
         ]
     },
@@ -1213,6 +1350,14 @@
                     "ALL Абонплата Технологический Bimeg",
                     "Imou Аренда видеокамеры новое"
                 ]
+            },
+            {
+                "organization_name": "Учебный центр",
+                "bin": "820802350374",
+                "address": "Габит Мусрепов улица, 15а",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -1264,6 +1409,14 @@
                 "address": "Ракымжан Кошкарбаев проспект, 1/5",
                 "is_kt_client": true,
                 "accruals": 206516.70535711,
+                "services": []
+            },
+            {
+                "organization_name": "Chemelex Raychem",
+                "bin": "80540003402",
+                "address": "Кабанбай батыр проспект, 15/1",
+                "is_kt_client": false,
+                "accruals": null,
                 "services": []
             }
         ]
@@ -1350,6 +1503,14 @@
                     "203 тарифная подзона Страны Балтии ОСС",
                     "103-2 тарифная подзона СНГ"
                 ]
+            },
+            {
+                "organization_name": "Транспортная компания",
+                "bin": "821022401098",
+                "address": "Алексея Петрова улица, 18/2",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -1374,6 +1535,14 @@
                 "address": "Мангилик Ел проспект, 33/1",
                 "is_kt_client": true,
                 "accruals": 0.0,
+                "services": []
+            },
+            {
+                "organization_name": "Мир кожи и автотканей, магазин",
+                "bin": "810103301235",
+                "address": "Константин Циолковский улица, 4Б",
+                "is_kt_client": false,
+                "accruals": null,
                 "services": []
             }
         ]
@@ -1436,6 +1605,14 @@
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ",
                     "Подписка по ТП Online KKM абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "ЛИТ групп, ТОО",
+                "bin": "170140021257",
+                "address": "Константин Циолковский улица, 4Б",
+                "is_kt_client": true,
+                "accruals": 6696.42857142,
+                "services": []
             }
         ]
     },
@@ -1460,6 +1637,14 @@
                 "address": "Туран проспект, 21/6",
                 "is_kt_client": true,
                 "accruals": 285676.98214277,
+                "services": []
+            },
+            {
+                "organization_name": "Тайм Инвест, ТОО, коллекторская компания",
+                "bin": "51240000800",
+                "address": "Кенесары улица, 40",
+                "is_kt_client": true,
+                "accruals": 444508.1517856901,
                 "services": []
             }
         ]
@@ -1517,6 +1702,14 @@
                 "address": "Сарыарка проспект, 31/1",
                 "is_kt_client": true,
                 "accruals": 741222.4642854298,
+                "services": []
+            },
+            {
+                "organization_name": "PBM Group",
+                "bin": "930318350495",
+                "address": "Аскар Токпанов улица, 10",
+                "is_kt_client": false,
+                "accruals": null,
                 "services": []
             }
         ]
@@ -1598,6 +1791,14 @@
                 "services": [
                     "Подписка по ТП Online KKM абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Movenpick, офис",
+                "bin": "160741024594",
+                "address": "Константин Циолковский улица, 4Б",
+                "is_kt_client": true,
+                "accruals": 11228.39285712,
+                "services": []
             }
         ]
     },
@@ -1708,6 +1909,14 @@
                 "services": [
                     "Подписка по ТП Online KKM абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Ast.Star.Group, ТОО",
+                "bin": "111240005865",
+                "address": "Алексея Петрова улица, 18/2",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -1890,6 +2099,14 @@
                 "is_kt_client": true,
                 "accruals": 153348.21428571,
                 "services": []
+            },
+            {
+                "organization_name": "Алекс kz, ТОО",
+                "bin": "101240019338",
+                "address": "Константин Циолковский улица, 4Б",
+                "is_kt_client": true,
+                "accruals": 13777.35714291,
+                "services": []
             }
         ]
     },
@@ -1922,6 +2139,14 @@
                 "address": "Алаш шоссе, 49",
                 "is_kt_client": true,
                 "accruals": 115894.98214299,
+                "services": []
+            },
+            {
+                "organization_name": "KazPrice, экспертно-оценочная компания",
+                "bin": "91040017111",
+                "address": "Кенесары улица, 40",
+                "is_kt_client": true,
+                "accruals": 20439.69642886,
                 "services": []
             }
         ]
@@ -2121,6 +2346,14 @@
                 "is_kt_client": true,
                 "accruals": 61095965.85714301,
                 "services": []
+            },
+            {
+                "organization_name": "BAZIS-A, строительная компания",
+                "bin": "960340000376",
+                "address": "Кабанбай батыр проспект, 15/1",
+                "is_kt_client": true,
+                "accruals": 2678.57142856,
+                "services": []
             }
         ]
     },
@@ -2195,6 +2428,14 @@
                     "Абонплата за мобильный номер ALTEL GSM",
                     "Подписка по ТП Online KKM абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "ASB, ТОО, компания химических реактивов и оборудования для лабораторий",
+                "bin": "990440002547",
+                "address": "Алексея Петрова улица, 18/2",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -2204,7 +2445,16 @@
         "latitude": 51.13791972202023,
         "longitude": 71.43413694523024,
         "building_purpose": "Бизнес-центр",
-        "companies": []
+        "companies": [
+            {
+                "organization_name": "Herbalife, клуб здорового образа жизни",
+                "bin": "710217402675",
+                "address": "Алексея Петрова улица, 18/2",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
+            }
+        ]
     },
     {
         "business_center_name": "Omega, бизнес-центр",
@@ -2235,6 +2485,14 @@
                 "address": "Санжар Асфендияров улица, 8а",
                 "is_kt_client": true,
                 "accruals": 741853.2946431501,
+                "services": []
+            },
+            {
+                "organization_name": "Vector, репетиторский центр",
+                "bin": "891018450671",
+                "address": "Шакарим Кудайбердыулы проспект, 72",
+                "is_kt_client": false,
+                "accruals": null,
                 "services": []
             }
         ]
@@ -2277,6 +2535,14 @@
                 "is_kt_client": true,
                 "accruals": 23966.51785716,
                 "services": []
+            },
+            {
+                "organization_name": "GazTime, ТОО",
+                "bin": "210740022237",
+                "address": "Шакарим Кудайбердыулы проспект, 26",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -2307,6 +2573,14 @@
                     "IDTV Аренда STB оператора - новый",
                     "12 зона сеть МТ-С (сеть Алтел)"
                 ]
+            },
+            {
+                "organization_name": "Магазин по продаже БАДов",
+                "bin": "801218450494",
+                "address": "Кенесары улица, 40",
+                "is_kt_client": true,
+                "accruals": 7042.053571439998,
+                "services": []
             }
         ]
     },
@@ -2347,6 +2621,14 @@
                     "303-3 тарифная подзона Дальнее Зарубежье ОСС",
                     "12 зона сеть Кар-Тел"
                 ]
+            },
+            {
+                "organization_name": "Alash Coffee",
+                "bin": "840915302233",
+                "address": "Шакарим Кудайбердыулы проспект, 26",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -2417,6 +2699,14 @@
                 "is_kt_client": true,
                 "accruals": 9122645.839285702,
                 "services": []
+            },
+            {
+                "organization_name": "AL-Electro",
+                "bin": "180640002151",
+                "address": "Караменде би Шакаулы улица, 4",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -2426,7 +2716,16 @@
         "latitude": 51.11853557398929,
         "longitude": 71.3926584946274,
         "building_purpose": "Бизнес-центр",
-        "companies": []
+        "companies": [
+            {
+                "organization_name": "Максилин",
+                "bin": "801218450494",
+                "address": "Кенесары улица, 40",
+                "is_kt_client": true,
+                "accruals": 7042.053571439998,
+                "services": []
+            }
+        ]
     },
     {
         "business_center_name": "Seven,бизнес-центр",
@@ -2465,6 +2764,14 @@
                 "address": "Алматы улица, 7",
                 "is_kt_client": true,
                 "accruals": 3015173.01785708,
+                "services": []
+            },
+            {
+                "organization_name": "Авицена, бизнес центр",
+                "bin": "170840025582",
+                "address": "Жиембет жырау улица, 2",
+                "is_kt_client": false,
+                "accruals": null,
                 "services": []
             }
         ]
@@ -2542,6 +2849,14 @@
                 "is_kt_client": true,
                 "accruals": 349828.74107148,
                 "services": []
+            },
+            {
+                "organization_name": "Art Pol",
+                "bin": "880517451608",
+                "address": "Константин Циолковский улица, 4Б",
+                "is_kt_client": true,
+                "accruals": 5097.92857143,
+                "services": []
             }
         ]
     },
@@ -2581,6 +2896,14 @@
                     "Подписка по ТП Online KKM абонплата за 1 ККМ",
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Quivogne kaz, ТОО",
+                "bin": "131240007250",
+                "address": "Караменде би Шакаулы улица, 4",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -2747,6 +3070,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "KOREM, АО Казахстанский оператор рынка электрической энергии и мощности",
+                "bin": "40340004109",
+                "address": "Сарайшык улица, 34а",
+                "is_kt_client": true,
+                "accruals": 928477.0892857801,
+                "services": []
             }
         ]
     },
@@ -2798,6 +3129,14 @@
                     "Абонплата ШПД по Ethernet для B2B",
                     "Абонплата за мобильный номер ALTEL GSM закр"
                 ]
+            },
+            {
+                "organization_name": "Dostar Dent",
+                "bin": "210340031231",
+                "address": "Габит Мусрепов улица, 15а",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -2840,6 +3179,14 @@
                     "12 зона сеть Кселл",
                     "12 зона сеть Кар-Тел"
                 ]
+            },
+            {
+                "organization_name": "Herbalife, клуб здорового образа жизни",
+                "bin": "951003401417",
+                "address": "Шакарим Кудайбердыулы проспект, 26",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -2849,7 +3196,16 @@
         "latitude": 51.12900911923778,
         "longitude": 71.46540577313445,
         "building_purpose": "Бизнес-центр",
-        "companies": []
+        "companies": [
+            {
+                "organization_name": "IZUMRUD, школа художественной гимнастики",
+                "bin": "840617400382",
+                "address": "Алексея Петрова улица, 18/2",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
+            }
+        ]
     },
     {
         "business_center_name": "Turan 50, бизнес-центр",
@@ -2951,6 +3307,14 @@
                 "is_kt_client": true,
                 "accruals": 1187666.91964299,
                 "services": []
+            },
+            {
+                "organization_name": "Q2, бизнес-центр",
+                "bin": "160440003199",
+                "address": "Кабанбай батыр проспект, 15/1",
+                "is_kt_client": true,
+                "accruals": 40178.57142869999,
+                "services": []
             }
         ]
     },
@@ -3014,6 +3378,14 @@
                 "is_kt_client": true,
                 "accruals": 2678.57142857,
                 "services": []
+            },
+            {
+                "organization_name": "TechInStroy, магазин электроинструментов и строительных материалов",
+                "bin": "170540023743",
+                "address": "Караменде би Шакаулы улица, 4",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -3057,6 +3429,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Tengrinews.kz, информационный интернет-портал",
+                "bin": "80940014680",
+                "address": "Мангилик Ел проспект, 41/1",
+                "is_kt_client": true,
+                "accruals": 13537273.08928592,
+                "services": []
             }
         ]
     },
@@ -3149,6 +3529,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Национальный Олимпийский Комитет РК, ОО",
+                "bin": "920240001531",
+                "address": "Сарайшык улица, 34а",
+                "is_kt_client": true,
+                "accruals": 423358.41071469,
+                "services": []
             }
         ]
     },
@@ -3284,6 +3672,14 @@
                 "address": "Абая проспект, 13",
                 "is_kt_client": true,
                 "accruals": 12321.42857148,
+                "services": []
+            },
+            {
+                "organization_name": "ОБО Беттерман, ТОО, представительство в г. Астане",
+                "bin": "60640010297",
+                "address": "Караменде би Шакаулы улица, 4",
+                "is_kt_client": true,
+                "accruals": 154149.10714284,
                 "services": []
             }
         ]
@@ -3516,6 +3912,14 @@
                     "B2B Аренда оборудования ONT оператора -бывшее в употреблении",
                     "Абонплата ID Net SOHO (new)"
                 ]
+            },
+            {
+                "organization_name": "Prime Design",
+                "bin": "10440002973",
+                "address": "Максут Нарикбаев улица, 2",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -3647,6 +4051,14 @@
                 "is_kt_client": true,
                 "accruals": 15000.0,
                 "services": []
+            },
+            {
+                "organization_name": "Ресанта Компани, склад выдачи товаров, официальный дилер Huter, Вихрь, Eurolux",
+                "bin": "180740020669",
+                "address": "Константин Циолковский улица, 4Б",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -3761,6 +4173,14 @@
                     "РК междугородные соединения",
                     "12 зона сеть Кселл"
                 ]
+            },
+            {
+                "organization_name": "Kiturami-Kazakhstan, компания по продаже газовых отопительных котлов",
+                "bin": "180740020669",
+                "address": "Константин Циолковский улица, 4Б",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -3770,7 +4190,16 @@
         "latitude": 51.18925044725882,
         "longitude": 71.40657267972618,
         "building_purpose": "Бизнес-центр",
-        "companies": []
+        "companies": [
+            {
+                "organization_name": "Prime Tour, туристическое агентство",
+                "bin": "170240008114",
+                "address": "Кенесары улица, 40",
+                "is_kt_client": true,
+                "accruals": 15380.17857148,
+                "services": []
+            }
+        ]
     },
     {
         "business_center_name": "Азамат, бизнес-центр",
@@ -3803,6 +4232,14 @@
                 "address": "Мангилик Ел проспект, 20/2",
                 "is_kt_client": true,
                 "accruals": 6782.830357129998,
+                "services": []
+            },
+            {
+                "organization_name": "MV nail studio",
+                "bin": "890428451438",
+                "address": "Шакарим Кудайбердыулы проспект, 26",
+                "is_kt_client": false,
+                "accruals": null,
                 "services": []
             }
         ]
@@ -3936,6 +4373,14 @@
                 "is_kt_client": true,
                 "accruals": 339642.8571433201,
                 "services": []
+            },
+            {
+                "organization_name": "PwC Kazakhstan, аудиторская компания",
+                "bin": "970940001318",
+                "address": "Кабанбай батыр проспект, 15/1",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -3985,6 +4430,14 @@
                     "303-1 тарифная подзона Дальнее Зарубежье",
                     "Услуга ИСС - бесплатный вызов (8-800)"
                 ]
+            },
+            {
+                "organization_name": "Строй Техно Холдинг, ТОО, строительная компания",
+                "bin": "111040003594",
+                "address": "Шакарим Кудайбердыулы проспект, 26",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -4012,6 +4465,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Ломбард Қазына Плюс, ТОО",
+                "bin": "100240013475",
+                "address": "Кенесары улица, 40",
+                "is_kt_client": true,
+                "accruals": 21664.02678576,
+                "services": []
             }
         ]
     },
@@ -4268,6 +4729,14 @@
                 "is_kt_client": true,
                 "accruals": 155946.31250013,
                 "services": []
+            },
+            {
+                "organization_name": "АстанаИнжкомСтрой, ТОО",
+                "bin": "51040005224",
+                "address": "Аскар Токпанов улица, 10",
+                "is_kt_client": true,
+                "accruals": 50735.26785714,
+                "services": []
             }
         ]
     },
@@ -4287,6 +4756,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Позитив securities, ТОО, коллекторское агентство",
+                "bin": "70540004697",
+                "address": "Кенесары улица, 40",
+                "is_kt_client": true,
+                "accruals": 189230.41964286,
+                "services": []
             }
         ]
     },
@@ -4407,6 +4884,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Казрост, ТОО",
+                "bin": "190440016027",
+                "address": "Тауелсиздик проспект, 15",
+                "is_kt_client": true,
+                "accruals": 1445731.83928553,
+                "services": []
             }
         ]
     },
@@ -4494,6 +4979,14 @@
                 "is_kt_client": true,
                 "accruals": 629.32142857,
                 "services": []
+            },
+            {
+                "organization_name": "Smart Build Astana",
+                "bin": "240140026838",
+                "address": "Караменде би Шакаулы улица, 4",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -4527,6 +5020,14 @@
                     "ALL Отключение от МГ (8)-",
                     "ALL Отключение от МН (10)-"
                 ]
+            },
+            {
+                "organization_name": "Little Bunny, интернет-магазин подгузников",
+                "bin": "890517450483",
+                "address": "Константин Циолковский улица, 4Б",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -4600,6 +5101,14 @@
                     "306 тарифная подзона Дальнее Зарубежье ОСС",
                     "303-3 тарифная подзона Дальнее Зарубежье ОСС"
                 ]
+            },
+            {
+                "organization_name": "Центр Казсталь, ТОО",
+                "bin": "180940031825",
+                "address": "Шакарим Кудайбердыулы проспект, 26",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -4775,6 +5284,14 @@
                 "is_kt_client": true,
                 "accruals": 29134.31249991,
                 "services": []
+            },
+            {
+                "organization_name": "Курылыс Финанс, ТОО, бизнес-центр",
+                "bin": "50440000934",
+                "address": "Алексея Петрова улица, 18/2",
+                "is_kt_client": true,
+                "accruals": 31759.92857135001,
+                "services": []
             }
         ]
     },
@@ -4906,6 +5423,14 @@
                 "services": [
                     "*05.24 2023 Абонплата ШПД по Ethernet для B2B"
                 ]
+            },
+            {
+                "organization_name": "Pro Dent, стоматология",
+                "bin": "180340000888",
+                "address": "Аскар Токпанов улица, 10",
+                "is_kt_client": true,
+                "accruals": 5995.10714288,
+                "services": []
             }
         ]
     },
@@ -4985,6 +5510,14 @@
                     "303-3 тарифная подзона Дальнее Зарубежье ОСС",
                     "303-3 тарифная подзона Дальнее Зарубежье"
                 ]
+            },
+            {
+                "organization_name": "Physmath, образовательный центр",
+                "bin": "900509351208",
+                "address": "Алексея Петрова улица, 18/2",
+                "is_kt_client": true,
+                "accruals": 0.0,
+                "services": []
             }
         ]
     },
@@ -5048,6 +5581,14 @@
                     "FMS Предоставление соединений в сети GSM",
                     "Абонплата за мобильный номер ALTEL GSM"
                 ]
+            },
+            {
+                "organization_name": "Shate, ресторан",
+                "bin": "240240034931",
+                "address": "Мангилик Ел проспект, 35а",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -5151,6 +5692,14 @@
                     "305-1 тарифная подзона Дальнее Зарубежье",
                     "101 тарифная подзона СНГ"
                 ]
+            },
+            {
+                "organization_name": "Sensata Group, строящиеся объекты, ТОО DepSal Almaty",
+                "bin": "210840013717",
+                "address": "Сарайшык улица, 34а",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -5402,6 +5951,14 @@
                     "Абонплата обслуживание с ограничениями",
                     "Абонплата ШПД по ADSL"
                 ]
+            },
+            {
+                "organization_name": "High Technology Systems, ТОО",
+                "bin": "130240002821",
+                "address": "Аскар Токпанов улица, 10",
+                "is_kt_client": true,
+                "accruals": 93000.0,
+                "services": []
             }
         ]
     },
@@ -5494,6 +6051,14 @@
                 "is_kt_client": true,
                 "accruals": 1531373.70535712,
                 "services": []
+            },
+            {
+                "organization_name": "Кабинет логопеда",
+                "bin": "860503450461",
+                "address": "Шакарим Кудайбердыулы проспект, 26",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -5563,6 +6128,14 @@
                     "Абонплата за мобильный номер ALTEL GSM",
                     "FMS Предоставление соединений в сети GSM"
                 ]
+            },
+            {
+                "organization_name": "Astanamarket",
+                "bin": "740703300799",
+                "address": "Константин Циолковский улица, 4Б",
+                "is_kt_client": true,
+                "accruals": 50892.85714283999,
+                "services": []
             }
         ]
     },
@@ -5664,6 +6237,14 @@
                     "Абонплата ID Net Business",
                     "Абонплата за блок из 4 IP-адресов new"
                 ]
+            },
+            {
+                "organization_name": "VideoSuperVision, ТОО",
+                "bin": "130340002280",
+                "address": "Алексея Петрова улица, 18/2",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -5745,6 +6326,14 @@
                     "Online ККМ E-kassa Mobile программное обеспечение для ККМ",
                     "Online ККМ E-kassa Mobile Абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "TN Education, центр изучения языков",
+                "bin": "770905400622",
+                "address": "Габит Мусрепов улица, 15а",
+                "is_kt_client": true,
+                "accruals": 6826.03571428,
+                "services": []
             }
         ]
     },
@@ -5778,6 +6367,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Qoshcar Energy, станция для зарядки электротранспорта",
+                "bin": "211140029126",
+                "address": "Максут Нарикбаев улица, 2",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -5835,6 +6432,14 @@
                 "services": [
                     "Подписка по ТП Online KKM абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Monolith, бизнес-центр",
+                "bin": "140940026003",
+                "address": "Максут Нарикбаев улица, 2",
+                "is_kt_client": true,
+                "accruals": 51440.66071431,
+                "services": []
             }
         ]
     },
@@ -6101,6 +6706,14 @@
                     "ALL Абонплата Технологический Bimeg",
                     "Imou Аренда видеокамеры новое"
                 ]
+            },
+            {
+                "organization_name": "Жетi Аспан, ТОО",
+                "bin": "100840010829",
+                "address": "Сарайшык улица, 34а",
+                "is_kt_client": true,
+                "accruals": 270703.6607149599,
+                "services": []
             }
         ]
     },
@@ -6174,6 +6787,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Service Medical Equipment",
+                "bin": "850813350954",
+                "address": "Шакарим Кудайбердыулы проспект, 72",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -6202,6 +6823,14 @@
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ",
                     "Подписка по ТП Online KKM абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Kaz Project group",
+                "bin": "130840002932",
+                "address": "Аскар Токпанов улица, 10",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -6221,6 +6850,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Black&White Video Production, медиакомпания",
+                "bin": "90240014349",
+                "address": "Аскар Токпанов улица, 10",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -6281,6 +6918,14 @@
                     "Абонплата за мобильный номер ALTEL GSM",
                     "FMS Прочие услуги мобильной связи"
                 ]
+            },
+            {
+                "organization_name": "Всё для бани, магазин",
+                "bin": "70940016318",
+                "address": "Константин Циолковский улица, 4Б",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -6290,7 +6935,16 @@
         "latitude": 51.1303895548665,
         "longitude": 71.38936365382831,
         "building_purpose": "Бизнес-центр",
-        "companies": []
+        "companies": [
+            {
+                "organization_name": "Ломбард 585 проба, ТОО",
+                "bin": "191240022621",
+                "address": "Кенесары улица, 40",
+                "is_kt_client": true,
+                "accruals": 83414.43749987001,
+                "services": []
+            }
+        ]
     },
     {
         "business_center_name": "Изумрудный квартал блок Б, бизнес-центр",
@@ -6496,6 +7150,14 @@
                 "is_kt_client": true,
                 "accruals": 28620570.33035634,
                 "services": []
+            },
+            {
+                "organization_name": "Azia servis elevator, ТОО",
+                "bin": "140140016790",
+                "address": "Алексея Петрова улица, 18/2",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -6564,6 +7226,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Tarlan park, компания по трудоустройству водителей, официальный партнер Яндекс.Такси",
+                "bin": "160940022064",
+                "address": "Шакарим Кудайбердыулы проспект, 72",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -6604,6 +7274,14 @@
                 "address": "Республики проспект, 42",
                 "is_kt_client": true,
                 "accruals": 6134.79464286,
+                "services": []
+            },
+            {
+                "organization_name": "avtozaphastiastana",
+                "bin": "920905350137",
+                "address": "Караменде би Шакаулы улица, 4",
+                "is_kt_client": false,
+                "accruals": null,
                 "services": []
             }
         ]
@@ -6698,6 +7376,14 @@
                 "services": [
                     "Абонплата за основной телефон ГТС"
                 ]
+            },
+            {
+                "organization_name": "Q2 Serviced Offices",
+                "bin": "110640009097",
+                "address": "Кабанбай батыр проспект, 15/1",
+                "is_kt_client": true,
+                "accruals": 54910.71428588,
+                "services": []
             }
         ]
     },
@@ -6896,6 +7582,14 @@
                     "Абонплата за один интеллектуальный номер Free phone",
                     "Плата за трафик Free phone"
                 ]
+            },
+            {
+                "organization_name": "Elkon, торговая компания, филиал в г. Астане",
+                "bin": "70441016068",
+                "address": "Габит Мусрепов улица, 15а",
+                "is_kt_client": true,
+                "accruals": 93310.07142854,
+                "services": []
             }
         ]
     },
@@ -6943,6 +7637,14 @@
                 "address": "Отырар улица, 15",
                 "is_kt_client": true,
                 "accruals": 20151.66071425,
+                "services": []
+            },
+            {
+                "organization_name": "Hevel Kazakhstan, ТОО",
+                "bin": "181040002955",
+                "address": "Кабанбай батыр проспект, 15/1",
+                "is_kt_client": false,
+                "accruals": null,
                 "services": []
             }
         ]
@@ -7098,6 +7800,14 @@
                     "Абонплата обслуживание с ограничениями",
                     "999 *03.23 Абонплата CLIP"
                 ]
+            },
+            {
+                "organization_name": "Казахстанская лига любителей футбола, ОО",
+                "bin": "90840011852",
+                "address": "Габит Мусрепов улица, 13",
+                "is_kt_client": true,
+                "accruals": 7862.9017857,
+                "services": []
             }
         ]
     },
@@ -7117,6 +7827,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Faberlic",
+                "bin": "640204400048",
+                "address": "Габит Мусрепов улица, 15а",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -7126,7 +7844,16 @@
         "latitude": 51.13489685013614,
         "longitude": 71.42889554504198,
         "building_purpose": "Бизнес-центр",
-        "companies": []
+        "companies": [
+            {
+                "organization_name": "Kazakhstan Travel, Ltd, визовый центр",
+                "bin": "130940016689",
+                "address": "Кенесары улица, 40",
+                "is_kt_client": true,
+                "accruals": 6826.035714310001,
+                "services": []
+            }
+        ]
     },
     {
         "business_center_name": "Маржан, бизнес-центр",
@@ -7269,6 +7996,14 @@
                 "is_kt_client": true,
                 "accruals": 8035.71428574,
                 "services": []
+            },
+            {
+                "organization_name": "ЭлитГеоСтрой, ТОО",
+                "bin": "220440004676",
+                "address": "Караменде би Шакаулы улица, 4",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -7318,6 +8053,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Roastbeef",
+                "bin": "820507350300",
+                "address": "Кабанбай батыр проспект, 15/1",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -7418,6 +8161,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Бионт, ТОО",
+                "bin": "961240002926",
+                "address": "Караменде би Шакаулы улица, 4",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -7427,7 +8178,16 @@
         "latitude": 51.13970191771264,
         "longitude": 71.47850482694443,
         "building_purpose": "Бизнес-центр",
-        "companies": []
+        "companies": [
+            {
+                "organization_name": "Oas-Qz, ТОО",
+                "bin": "191040030714",
+                "address": "Аскар Токпанов улица, 10",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
+            }
+        ]
     },
     {
         "business_center_name": "Миссон, бизнес-центр",
@@ -7461,6 +8221,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Revel, компания",
+                "bin": "680127450456",
+                "address": "Габит Мусрепов улица, 15а",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -7504,6 +8272,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "First in Law Ltd, юридическая компания",
+                "bin": "230340036167",
+                "address": "Максут Нарикбаев улица, 2",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -7541,6 +8317,14 @@
                 "services": [
                     "Подписка по ТП Online KKM абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Satti stom",
+                "bin": "210340004224",
+                "address": "Габит Мусрепов улица, 15а",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -7694,6 +8478,14 @@
                 "is_kt_client": true,
                 "accruals": 15900.74107142,
                 "services": []
+            },
+            {
+                "organization_name": "Noventiq.kz, компания",
+                "bin": "100340016760",
+                "address": "Сарайшык улица, 34а",
+                "is_kt_client": true,
+                "accruals": 1559925.33035704,
+                "services": []
             }
         ]
     },
@@ -7843,6 +8635,14 @@
                     "B2B SIP телефон - клиента",
                     "Абонплата ШПД по Ethernet для B2B"
                 ]
+            },
+            {
+                "organization_name": "Мерей, бизнес-центры",
+                "bin": "800210300138",
+                "address": "Алаш шоссе, 49а",
+                "is_kt_client": true,
+                "accruals": 115894.98214299,
+                "services": []
             }
         ]
     },
@@ -7867,6 +8667,14 @@
                 "address": "Амангельды Иманова улица, 11",
                 "is_kt_client": true,
                 "accruals": 207050792.633918,
+                "services": []
+            },
+            {
+                "organization_name": "Комсталь",
+                "bin": "170240002036",
+                "address": "Аскар Токпанов улица, 10",
+                "is_kt_client": false,
+                "accruals": null,
                 "services": []
             }
         ]
@@ -7907,6 +8715,14 @@
                 "address": "Динмухамед Конаев улица, 14/3",
                 "is_kt_client": true,
                 "accruals": 7437132.366071479,
+                "services": []
+            },
+            {
+                "organization_name": "Golden__eyelashes_",
+                "bin": "940227451586",
+                "address": "Шакарим Кудайбердыулы проспект, 26",
+                "is_kt_client": false,
+                "accruals": null,
                 "services": []
             }
         ]
@@ -8046,6 +8862,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Стиль Оптика А",
+                "bin": "51240010243",
+                "address": "Габит Мусрепов улица, 15а",
+                "is_kt_client": true,
+                "accruals": 7214.86607144,
+                "services": []
             }
         ]
     },
@@ -8055,7 +8879,16 @@
         "latitude": 51.11670834254775,
         "longitude": 71.40420355282738,
         "building_purpose": "Бизнес-центр",
-        "companies": []
+        "companies": [
+            {
+                "organization_name": "Nur Kids, магазин детской одежды",
+                "bin": "871105400595",
+                "address": "Кенесары улица, 40",
+                "is_kt_client": true,
+                "accruals": 5875.58035713,
+                "services": []
+            }
+        ]
     },
     {
         "business_center_name": "Орда, бизнес-центр",
@@ -8206,6 +9039,14 @@
                     "Imou Аренда видеокамеры новое",
                     "Абонплата за мобильный номер ALTEL GSM"
                 ]
+            },
+            {
+                "organization_name": "BI Service",
+                "bin": "121140010136",
+                "address": "Мангилик Ел проспект, 35а",
+                "is_kt_client": true,
+                "accruals": 392320.6607142799,
+                "services": []
             }
         ]
     },
@@ -8255,6 +9096,14 @@
                 "services": [
                     "Подписка по ТП Online KKM абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "G-Time Corporation, ТОО, компания по продаже шунгитовой продукции",
+                "bin": "120540012401",
+                "address": "Кенесары улица, 40",
+                "is_kt_client": true,
+                "accruals": 6160.71428574,
+                "services": []
             }
         ]
     },
@@ -8395,6 +9244,14 @@
                     "B2B SIP телефон - клиента",
                     "Абонплата ШПД ID NET  ИП,ЮЛ для ID Phone"
                 ]
+            },
+            {
+                "organization_name": "Арман авто, ТОО, автокомплекс",
+                "bin": "50640005388",
+                "address": "Габит Мусрепов улица, 13",
+                "is_kt_client": true,
+                "accruals": 87080.34821424,
+                "services": []
             }
         ]
     },
@@ -8442,6 +9299,14 @@
                     "12 зона сеть Кселл",
                     "12 зона сеть Кар-Тел"
                 ]
+            },
+            {
+                "organization_name": "My_bikini_astana",
+                "bin": "180540001506",
+                "address": "Кенесары улица, 40",
+                "is_kt_client": true,
+                "accruals": 6782.83035713,
+                "services": []
             }
         ]
     },
@@ -8568,6 +9433,14 @@
                     "306 тарифная подзона Дальнее Зарубежье",
                     "308-1 тарифная подзона Дальнее Зарубежье ОСС"
                 ]
+            },
+            {
+                "organization_name": "Маркет Радио-Астана, рекламная компания",
+                "bin": "130740015900",
+                "address": "Кенесары улица, 40",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -8616,6 +9489,14 @@
                     "Абонплата за блок из 32 IP-адресов",
                     "Услуга ИСС - бесплатный вызов (8-800)"
                 ]
+            },
+            {
+                "organization_name": "Istina Dance&Sport Academy, частная академия танца и спорта",
+                "bin": "661213450387",
+                "address": "Шакарим Кудайбердыулы проспект, 26",
+                "is_kt_client": true,
+                "accruals": 152155.82142872,
+                "services": []
             }
         ]
     },
@@ -8643,6 +9524,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Ice Print, компания по брендированию на одежде",
+                "bin": "900114350133",
+                "address": "Габит Мусрепов улица, 15а",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -8767,6 +9656,14 @@
                 "is_kt_client": true,
                 "accruals": 7766.41964287,
                 "services": []
+            },
+            {
+                "organization_name": "Apart-Expert",
+                "bin": "860621451025",
+                "address": "Сарайшык улица, 34а",
+                "is_kt_client": true,
+                "accruals": 90361.46428570001,
+                "services": []
             }
         ]
     },
@@ -8804,6 +9701,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Мастер саун, ТОО",
+                "bin": "110240020876",
+                "address": "Константин Циолковский улица, 4Б",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -8914,6 +9819,14 @@
                 "is_kt_client": true,
                 "accruals": 9375.00000001,
                 "services": []
+            },
+            {
+                "organization_name": "Flagman Extension, учебно-образовательный центр",
+                "bin": "41140005797",
+                "address": "Аскар Токпанов улица, 10",
+                "is_kt_client": true,
+                "accruals": 42115.78571416,
+                "services": []
             }
         ]
     },
@@ -8933,6 +9846,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "Mangosteen, магазин экзотических фруктов",
+                "bin": "70240017390",
+                "address": "Константин Циолковский улица, 4Б",
+                "is_kt_client": true,
+                "accruals": 135049.67857135,
+                "services": []
             }
         ]
     },
@@ -9219,6 +10140,14 @@
                 "services": [
                     "Подписка по ТП Online KKM Mobile абонплата за 1 ККМ"
                 ]
+            },
+            {
+                "organization_name": "ORTA Community, креативное пространство",
+                "bin": "220340900419",
+                "address": "Мангилик Ел проспект, 41/1",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
             }
         ]
     },
@@ -9746,6 +10675,40 @@
                 "address": "Караменде би Шакаулы улица, 4",
                 "is_kt_client": true,
                 "accruals": 154149.10714284,
+                "services": []
+            }
+        ]
+    },
+    {
+        "business_center_name": "Бизнес-центр, бизнес-центр",
+        "district": "Нура",
+        "latitude": 51.139857720916936,
+        "longitude": 71.39305267537408,
+        "building_purpose": "Бизнес-центр",
+        "companies": [
+            {
+                "organization_name": "Sapa Control",
+                "bin": "10440002973",
+                "address": "Максут Нарикбаев улица, 2",
+                "is_kt_client": false,
+                "accruals": null,
+                "services": []
+            }
+        ]
+    },
+    {
+        "business_center_name": "Общий итог, бизнес-центр",
+        "district": "Байконыр",
+        "latitude": 51.16560963387073,
+        "longitude": 71.43261268385614,
+        "building_purpose": "Бизнес-центр",
+        "companies": [
+            {
+                "organization_name": "PrPro",
+                "bin": "881017400152",
+                "address": "Кенесары улица, 40",
+                "is_kt_client": true,
+                "accruals": 74619.81250007,
                 "services": []
             }
         ]
