@@ -178,7 +178,7 @@ function ZoneStatsPanel({ selectedZone, businessCenters }) {
 
   const totalCompanies = filteredBCs.reduce((sum, bc) => sum + bc.companies.length, 0);
   const ktClients = filteredBCs.reduce((sum, bc) => 
-    sum + bc.companies.filter(company => company.is_kt_client).length, 0
+    sum + filteredBCs.companies.filter(company => company.is_kt_client).length, 0
   );
   const totalRevenue = filteredBCs.reduce((sum, bc) => 
     sum + bc.companies.reduce((companySum, company) => companySum + (company.accruals || 0), 0), 0
@@ -330,4 +330,474 @@ function MapInteractions({
 
     return () => {
       if (markersRef.current) {
-        map.removeLayer
+        map.removeLayer(markersRef.current);
+      }
+      if (heatmapRef.current) {
+        map.removeLayer(heatmapRef.current);
+      }
+    };
+  }, [map, businessCenters, showHeatmap, showClusters, filterType, onOrganizationClick, onBusinessCenterClick]);
+
+  // Handle zone selection
+  useEffect(() => {
+    if (!map) return;
+
+    let isDrawing = false;
+    let startLatLng = null;
+    let rectangle = null;
+
+    const handleMouseDown = (e) => {
+      if (!zoneSelectionMode) return;
+      isDrawing = true;
+      startLatLng = e.latlng;
+    };
+
+    const handleMouseMove = (e) => {
+      if (!zoneSelectionMode || !isDrawing || !startLatLng) return;
+      
+      if (rectangle) {
+        map.removeLayer(rectangle);
+      }
+      
+      const bounds = L.latLngBounds(startLatLng, e.latlng);
+      rectangle = L.rectangle(bounds, {
+        color: '#3b82f6',
+        weight: 2,
+        fillOpacity: 0.1
+      }).addTo(map);
+    };
+
+    const handleMouseUp = (e) => {
+      if (!zoneSelectionMode || !isDrawing || !startLatLng) return;
+      
+      isDrawing = false;
+      const bounds = L.latLngBounds(startLatLng, e.latlng);
+      
+      setSelectedZone({
+        bounds: {
+          north: bounds.getNorth(),
+          south: bounds.getSouth(),
+          east: bounds.getEast(),
+          west: bounds.getWest()
+        },
+        rectangle: rectangle
+      });
+      
+      startLatLng = null;
+    };
+
+    if (zoneSelectionMode) {
+      map.on('mousedown', handleMouseDown);
+      map.on('mousemove', handleMouseMove);
+      map.on('mouseup', handleMouseUp);
+      map.getContainer().style.cursor = 'crosshair';
+    } else {
+      map.off('mousedown', handleMouseDown);
+      map.off('mousemove', handleMouseMove);
+      map.off('mouseup', handleMouseUp);
+      if (rectangle) {
+        map.removeLayer(rectangle);
+      }
+      setSelectedZone(null);
+      map.getContainer().style.cursor = '';
+    }
+
+    return () => {
+      map.off('mousedown', handleMouseDown);
+      map.off('mousemove', handleMouseMove);
+      map.off('mouseup', handleMouseUp);
+      map.getContainer().style.cursor = '';
+    };
+  }, [map, zoneSelectionMode, setSelectedZone]);
+
+  return null;
+}
+
+// Component for organization card modal
+function OrganizationCard({ organization, isOpen, onClose }) {
+  if (!isOpen || !organization) return null;
+
+  return (
+    <div className="organization-card-overlay" style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 10000
+    }}>
+      <div className="organization-card" style={{
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        padding: '24px',
+        maxWidth: '500px',
+        width: '90%',
+        maxHeight: '80vh',
+        overflowY: 'auto',
+        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+          <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold', color: '#1f2937' }}>
+            {organization.organization_name}
+          </h2>
+          <button 
+            onClick={onClose}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '24px',
+              cursor: 'pointer',
+              color: '#6b7280',
+              padding: '0',
+              marginLeft: '16px'
+            }}
+          >
+            ×
+          </button>
+        </div>
+        
+        <div style={{ marginBottom: '16px' }}>
+          <div style={{ marginBottom: '8px' }}>
+            <strong style={{ color: '#374151' }}>БИН:</strong>
+            <span style={{ marginLeft: '8px', color: '#6b7280' }}>{organization.bin}</span>
+          </div>
+          <div style={{ marginBottom: '8px' }}>
+            <strong style={{ color: '#374151' }}>Адрес:</strong>
+            <span style={{ marginLeft: '8px', color: '#6b7280' }}>{organization.address}</span>
+          </div>
+          {organization.accruals > 0 && (
+            <div style={{ marginBottom: '8px' }}>
+              <strong style={{ color: '#374151' }}>Начисления:</strong>
+              <span style={{ marginLeft: '8px', color: '#059669', fontWeight: '600' }}>
+                {organization.accruals.toLocaleString()} тг
+              </span>
+            </div>
+          )}
+        </div>
+
+        {organization.is_kt_client && organization.services && organization.services.length > 0 && (
+          <div>
+            <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#1f2937', marginBottom: '12px' }}>
+              Услуги Казахтелеком:
+            </h3>
+            <div style={{ backgroundColor: '#f3f4f6', borderRadius: '6px', padding: '12px' }}>
+              {organization.services.map((service, index) => (
+                <div key={index} style={{
+                  padding: '8px 0',
+                  borderBottom: index < organization.services.length - 1 ? '1px solid #e5e7eb' : 'none',
+                  fontSize: '14px',
+                  color: '#374151'
+                }}>
+                  {service}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {organization.is_kt_client && (
+          <div style={{
+            marginTop: '16px',
+            padding: '12px',
+            backgroundColor: '#dbeafe',
+            borderRadius: '6px',
+            border: '1px solid #93c5fd'
+          }}>
+            <div style={{ fontSize: '14px', color: '#1e40af', fontWeight: '600' }}>
+              ✓ Клиент Казахтелеком
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function renderCompanyPopup(businessCenter, onOrganizationClick, onBusinessCenterClick) {
+  // Calculate stats for the business center
+  const totalCompaniesInBC = businessCenter.companies.length;
+  const ktClientsInBC = businessCenter.companies.filter(company => company.is_kt_client).length;
+  const totalRevenueInBC = businessCenter.companies.reduce((sum, company) => sum + (company.accruals || 0), 0);
+  const capturePercentage = totalCompaniesInBC > 0 
+    ? ((ktClientsInBC / totalCompaniesInBC) * 100).toFixed(1) 
+    : 0;
+
+  // Create a unique ID for this popup
+  const popupId = `popup-${businessCenter.business_center_name.replace(/\s+/g, '-').toLowerCase()}`;
+  
+  // Store the callback functions globally so they can be accessed from the popup
+  window[`${popupId}-org-callback`] = onOrganizationClick;
+  window[`${popupId}-bc-callback`] = onBusinessCenterClick;
+  
+  return `
+    <div style="min-width: 300px; max-width: 400px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3 style="margin: 0; font-weight: bold; font-size: 16px;">
+          ${businessCenter.business_center_name}
+        </h3>
+        <button onclick="window['${popupId}-bc-callback'](${JSON.stringify(businessCenter).replace(/"/g, '&quot;')}); return false;"
+                style="background-color: #3b82f6; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer;"
+                onmouseover="this.style.backgroundColor='#2563eb'"
+                onmouseout="this.style.backgroundColor='#3b82f6'">
+          Фильтр услуг
+        </button>
+      </div>
+      <p style="margin: 0 0 10px 0; font-size: 14px; color: #666;">
+        <strong>Район:</strong> ${businessCenter.district}<br/>
+        <strong>Назначение:</strong> ${businessCenter.building_purpose}
+      </p>
+
+      <div style="margin-bottom: 15px; padding: 10px; background-color: #f0f8ff; border-left: 4px solid #3b82f6; border-radius: 4px;">
+        <p style="margin: 0; font-size: 13px; color: #333;">
+          <strong>КТ клиентов:</strong> <span style="font-weight: bold; color: #1e40af;">${ktClientsInBC}</span> из ${totalCompaniesInBC}
+        </p>
+        <p style="margin: 5px 0 0 0; font-size: 13px; color: #333;">
+          <strong>Доход от КТ:</strong> <span style="font-weight: bold; color: #059669;">${totalRevenueInBC.toLocaleString()} тг</span>
+        </p>
+        <p style="margin: 5px 0 0 0; font-size: 13px; color: #333;">
+          <strong>Процент "захвата":</strong> <span style="font-weight: bold; color: #d97706;">${capturePercentage}%</span>
+        </p>
+      </div>
+      
+      <div style="max-height: 300px; overflow-y: auto;">
+        <h4 style="margin: 10px 0 5px 0; font-size: 14px; font-weight: bold;">
+          Компании (${businessCenter.companies.length}):
+        </h4>
+        
+        ${businessCenter.companies.map(company => `
+          <div class="company-item" style="margin-bottom: 8px; padding: 8px; border: 1px solid #e5e7eb; border-radius: 4px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="font-weight: bold; font-size: 13px; flex: 1;">
+                <a href="#" 
+                   onclick="window['${popupId}-org-callback'](${JSON.stringify(company).replace(/"/g, '&quot;')}); return false;"
+                   style="color: #3b82f6; text-decoration: none; cursor: pointer;"
+                   onmouseover="this.style.textDecoration='underline'"
+                   onmouseout="this.style.textDecoration='none'">
+                  ${company.organization_name}
+                </a>
+              </div>
+              <div style="margin-left: 10px;">
+                ${company.is_kt_client ? 
+                  '<span style="background-color: #3b82f6; color: white; padding: 2px 6px; border-radius: 12px; font-size: 11px; font-weight: bold;">КТ</span>' : 
+                  '<span style="background-color: #6b7280; color: white; padding: 2px 6px; border-radius: 12px; font-size: 11px; font-weight: bold;">не КТ</span>'
+                }
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function MapPage() {
+  const [businessCenters, setBusinessCenters] = useState([]);
+  const [showHeatmap, setShowHeatmap] = useState(false);
+  const [showClusters, setShowClusters] = useState(true);
+  const [zoneSelectionMode, setZoneSelectionMode] = useState(false);
+  const [selectedZone, setSelectedZone] = useState(null);
+  const [filterType, setFilterType] = useState('all');
+  const [selectedOrganization, setSelectedOrganization] = useState(null);
+  const [showOrganizationCard, setShowOrganizationCard] = useState(false);
+  const [selectedServices, setSelectedServices] = useState([]);
+  const [showServiceFilter, setShowServiceFilter] = useState(false);
+  const [selectedBusinessCenter, setSelectedBusinessCenter] = useState(null);
+
+  useEffect(() => {
+    setBusinessCenters(data);
+  }, []);
+
+  const clearZone = () => {
+    setSelectedZone(null);
+    setZoneSelectionMode(false);
+  };
+
+  const handleOrganizationClick = (organization) => {
+    setSelectedOrganization(organization);
+    setShowOrganizationCard(true);
+  };
+
+  const closeOrganizationCard = () => {
+    setShowOrganizationCard(false);
+    setSelectedOrganization(null);
+  };
+
+  const handleBusinessCenterClick = (businessCenter) => {
+    setSelectedBusinessCenter(businessCenter);
+    setShowServiceFilter(true);
+    // Get all unique services from this business center's KT clients
+    const allServices = [];
+    businessCenter.companies.forEach(company => {
+      if (company.is_kt_client && company.services) {
+        allServices.push(...company.services);
+      }
+    });
+    const uniqueServices = [...new Set(allServices)];
+    setSelectedServices(uniqueServices);
+  };
+
+  const closeServiceFilter = () => {
+    setShowServiceFilter(false);
+    setSelectedBusinessCenter(null);
+    setSelectedServices([]);
+  };
+
+  // Make toggleServiceSelection globally accessible for the inline HTML in the popup
+  // This is generally not recommended for complex interactions, but for simple toggles
+  // within a popup, it can be a quick solution. For more robust solutions, consider
+  // using a dedicated React component for the popup content.
+  window.toggleServiceSelection = (service) => {
+    setSelectedServices(prev => 
+      prev.includes(service) 
+        ? prev.filter(s => s !== service)
+        : [...prev, service]
+    );
+  };
+
+  return (
+    <div className="relative">
+      <MapContainer
+        center={[51.1694, 71.4491]} // Astana coordinates
+        zoom={12}
+        style={{ height: 'calc(100vh - 100px)', width: '100%' }}
+        className={zoneSelectionMode ? 'zone-selection-active' : ''}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        
+        <MapInteractions
+          businessCenters={businessCenters}
+          showHeatmap={showHeatmap}
+          showClusters={showClusters}
+          zoneSelectionMode={zoneSelectionMode}
+          selectedZone={selectedZone}
+          setSelectedZone={setSelectedZone}
+          filterType={filterType}
+          onOrganizationClick={handleOrganizationClick}
+          onBusinessCenterClick={handleBusinessCenterClick}
+        />
+        
+        {selectedZone && selectedZone.rectangle && (
+          <Rectangle
+            bounds={[
+              [selectedZone.bounds.south, selectedZone.bounds.west],
+              [selectedZone.bounds.north, selectedZone.bounds.east]
+            ]}
+            pathOptions={{
+              color: '#3b82f6',
+              weight: 2,
+              fillOpacity: 0.1
+            }}
+          />
+         )}
+      </MapContainer>
+      
+      <MapControls
+        showHeatmap={showHeatmap}
+        setShowHeatmap={setShowHeatmap}
+        showClusters={showClusters}
+        setShowClusters={setShowClusters}
+        zoneSelectionMode={zoneSelectionMode}
+        setZoneSelectionMode={setZoneSelectionMode}
+        selectedZone={selectedZone}
+        clearZone={clearZone}
+        filterType={filterType}
+        setFilterType={setFilterType}
+      />
+      
+      <ZoneStatsPanel
+        selectedZone={selectedZone}
+        businessCenters={businessCenters}
+      />
+
+      <OrganizationCard
+        organization={selectedOrganization}
+        isOpen={showOrganizationCard}
+        onClose={closeOrganizationCard}
+      />
+
+      {/* Service Filter Modal */}
+      {showServiceFilter && selectedBusinessCenter && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 10000
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '8px',
+            padding: '24px',
+            maxWidth: '600px',
+            width: '90%',
+            maxHeight: '80vh',
+            overflowY: 'auto',
+            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+              <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold', color: '#1f2937' }}>
+                Услуги в {selectedBusinessCenter.business_center_name}
+              </h2>
+              <button 
+                onClick={closeServiceFilter}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '24px',
+                  cursor: 'pointer',
+                  color: '#6b7280',
+                  padding: '0',
+                  marginLeft: '16px'
+                }}
+              >
+                ×
+              </button>
+            </div>
+            
+            <div style={{ marginBottom: '16px' }}>
+              <p style={{ color: '#6b7280', marginBottom: '16px' }}>
+                Выберите услуги для фильтрации организаций:
+              </p>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '8px' }}>
+                {(() => {
+                  const allServices = [];
+                  selectedBusinessCenter.companies.forEach(company => {
+                    if (company.is_kt_client && company.services) {
+                      allServices.push(...company.services);
+                    }
+                  });
+                  const uniqueServices = [...new Set(allServices)];
+                  
+                  return uniqueServices.map((service, index) => (
+                    `<label key="${index}" style="display: flex; align-items: center; padding: 8px; border: 1px solid #e5e7eb; border-radius: 4px; cursor: pointer; ${selectedServices.includes(service) ? 'background-color: #eff6ff; border-color: #3b82f6;' : ''}">
+                      <input 
+                        type="checkbox" 
+                        ${selectedServices.includes(service) ? 'checked' : ''}
+                        onchange="window.toggleServiceSelection('${service.replace(/'/g, "\\'")}')"
+                        style="margin-right: 8px;"
+                      />
+                      <span style="font-size: 14px; color: #374151;">${service}</span>
+                    </label>`
+                  )).join('');
+                })()}
+              </div>
+            </div>
+            
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+              <button 
+                onClick={closeServiceFilter}
+                style={{
+                  padding:
