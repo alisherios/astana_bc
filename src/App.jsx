@@ -535,7 +535,7 @@ function renderCompanyPopup(businessCenter, onOrganizationClick, onBusinessCente
             ${businessCenter.business_center_name}
           </h3>
           <p style="margin: 4px 0 0 0; font-size: 13px; color: #4b5563;">
-            Клиенты: <strong style="color: #2563eb;">КТ: ${ktClientsCount}</strong> | <strong style="color: #6b7280;">не КТ: ${nonKtClientsCount}</strong>
+            Клиенты: <strong style="color: #6b7280;">не КТ: ${nonKtClientsCount}</strong> | <strong style="color: #2563eb;">КТ: ${ktClientsCount}</strong>
           </p>
         </div>
         <button onclick="window['${popupId}-bc-callback'](${JSON.stringify(businessCenter).replace(/"/g, '&quot;')}); return false;"
@@ -580,6 +580,7 @@ function renderCompanyPopup(businessCenter, onOrganizationClick, onBusinessCente
     </div>
   `;
 }
+
 
 
 function MapPage() {
