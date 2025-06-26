@@ -531,6 +531,10 @@ function renderCompanyPopup(businessCenter, onOrganizationClick, onBusinessCente
         <h3 style="margin: 0; font-weight: bold; font-size: 16px;">
           ${businessCenter.business_center_name}
         </h3>
+        <p style="margin: 4px 0 0 0; font-size: 13px; color: #4b5563;">
+  Клиенты: <strong style="color: #2563eb;">КТ: ${ktClientsCount}</strong> | <strong style="color: #6b7280;">не КТ: ${nonKtClientsCount}</strong>
+</p>
+
         <button onclick="window['${popupId}-bc-callback'](${JSON.stringify(businessCenter).replace(/"/g, '&quot;')}); return false;"
                 style="background-color: #3b82f6; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer;"
                 onmouseover="this.style.backgroundColor='#2563eb'"
