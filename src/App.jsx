@@ -24,20 +24,20 @@ L.Icon.Default.mergeOptions({
 const ktClientIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
+  iconSize:,
+  iconAnchor:,
   popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  shadowSize:
 } );
 
 // Default icon for regular business centers
 const defaultIcon = new L.Icon({
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
+  iconSize:,
+  iconAnchor:,
   popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  shadowSize:
 } );
 
 function Navigation() {
@@ -782,4 +782,4 @@ function MapPage() {
                   const uniqueServices = [...new Set(allServices)];
                   
                   return uniqueServices.map((service, index) => (
-                    `<label key="${index}" style="display: flex; align-items
+                    `<label key="${index}" style="display: flex; align-items: center; padding: 8px; border: 1px solid #e5e7eb; border-radius: 4px; cursor:
