@@ -51,7 +51,24 @@ export const translations = {
     businessCenter: "Бизнес-центр:",
     
     // Currency
-    currency: "тг"
+    currency: "тг",
+    
+    // Analytics Page Specific
+    selectDistrict: "Выберите район",
+    selectBuildingType: "Тип здания",
+    topBusinessCenters: "Топ бизнес-центров",
+    topBusinessCentersDesc: "По количеству компаний",
+    topKtClients: "Топ КТ клиентов",
+    topKtClientsDesc: "По размеру доходов",
+    lowPenetrationBCs: "БЦ с низким проникновением",
+    lowPenetrationDesc: "Есть КТ, но большинство — не наши",
+    companies: "компаний",
+    clients: "клиентов",
+    services: "услуг",
+    fromTotal: "от общего числа",
+    bcAbbr: "БЦ",
+    companiesChart: "Компании",
+    ktClientsChart: "КТ клиенты"
   },
   
   kk: {
@@ -105,7 +122,24 @@ export const translations = {
     businessCenter: "Бизнес-орталық:",
     
     // Currency
-    currency: "тг"
+    currency: "тг",
+    
+    // Analytics Page Specific
+    selectDistrict: "Ауданды таңдаңыз",
+    selectBuildingType: "Ғимарат түрі",
+    topBusinessCenters: "Топ бизнес-орталықтар",
+    topBusinessCentersDesc: "Компаниялар саны бойынша",
+    topKtClients: "Топ ҚТ клиенттері",
+    topKtClientsDesc: "Кіріс мөлшері бойынша",
+    lowPenetrationBCs: "Төмен енгізу деңгейі бар БО",
+    lowPenetrationDesc: "ҚТ бар, бірақ көпшілігі біздің емес",
+    companies: "компаниялар",
+    clients: "клиенттер",
+    services: "қызметтер",
+    fromTotal: "жалпы санынан",
+    bcAbbr: "БО",
+    companiesChart: "Компаниялар",
+    ktClientsChart: "ҚТ клиенттері"
   }
 };
 
