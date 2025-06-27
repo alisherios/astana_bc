@@ -5,16 +5,21 @@ import { Button } from '../components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Badge } from '../components/ui/badge';
 import { Building, Users, MapPin, TrendingUp, Download } from 'lucide-react';
+import { useTranslation } from '../translations';
 import data from '../assets/data.json';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
 
-function AnalyticsPage() {
+function AnalyticsPage({ businessCenters, language = 'ru' }) {
+  const { t } = useTranslation(language);
   const [selectedDistrict, setSelectedDistrict] = useState('all');
   const [selectedBuildingType, setSelectedBuildingType] = useState('all');
 
+  // Use businessCenters prop if provided, otherwise use imported data
+  const dataSource = businessCenters || data;
+
   const analytics = useMemo(() => {
-    let filteredData = data;
+    let filteredData = dataSource;
 
     if (selectedDistrict !== 'all') {
       filteredData = filteredData.filter(bc => bc.district === selectedDistrict);
@@ -90,7 +95,7 @@ function AnalyticsPage() {
           allKtClients.push({
             name: company.organization_name,
             revenue: company.accruals || 0,
-            services: company.services.length,
+            services: company.services ? company.services.length : 0,
             businessCenter: bc.business_center_name
           });
         }
@@ -129,15 +134,15 @@ function AnalyticsPage() {
       topKtClients,
       lowPenetrationBCs,
     };
-  }, [selectedDistrict, selectedBuildingType]);
+  }, [selectedDistrict, selectedBuildingType, dataSource]);
 
-  const districts = [...new Set(data.map(bc => bc.district))];
-  const buildingTypes = [...new Set(data.map(bc => bc.building_purpose))];
+  const districts = [...new Set(dataSource.map(bc => bc.district))];
+  const buildingTypes = [...new Set(dataSource.map(bc => bc.building_purpose))];
 
   const exportData = () => {
     const csvContent = [
-      ['Бизнес-центр', 'Район', 'Назначение', 'Компаний', 'КТ клиентов', 'Доходы'],
-      ...data.map(bc => [
+      [t('businessCenter'), t('distributionByDistricts'), t('buildingTypes'), t('companies'), t('ktClients'), 'Доходы'],
+      ...dataSource.map(bc => [
         bc.business_center_name,
         bc.district,
         bc.building_purpose,
@@ -159,20 +164,20 @@ function AnalyticsPage() {
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Аналитика Бизнес-Центров Астаны
+            {t('analyticsTitle')}
           </h1>
           <p className="text-gray-600">
-            Детальная статистика по бизнес-центрам, компаниям и клиентам Казахтелеком
+            {t('analyticsDescription')}
           </p>
         </div>
 
         <div className="mb-6 flex gap-4 flex-wrap">
           <Select value={selectedDistrict} onValueChange={setSelectedDistrict}>
             <SelectTrigger className="w-48">
-              <SelectValue placeholder="Выберите район" />
+              <SelectValue placeholder={t('selectDistrict')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Все районы</SelectItem>
+              <SelectItem value="all">{t('allDistricts')}</SelectItem>
               {districts.map(district => (
                 <SelectItem key={district} value={district}>{district}</SelectItem>
               ))}
@@ -181,10 +186,10 @@ function AnalyticsPage() {
 
           <Select value={selectedBuildingType} onValueChange={setSelectedBuildingType}>
             <SelectTrigger className="w-48">
-              <SelectValue placeholder="Тип здания" />
+              <SelectValue placeholder={t('selectBuildingType')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Все типы</SelectItem>
+              <SelectItem value="all">{t('allTypes')}</SelectItem>
               {buildingTypes.map(type => (
                 <SelectItem key={type} value={type}>{type}</SelectItem>
               ))}
@@ -193,14 +198,14 @@ function AnalyticsPage() {
 
           <Button onClick={exportData} variant="outline" className="ml-auto">
             <Download className="w-4 h-4 mr-2" />
-            Экспорт CSV
+            {t('exportCsv')}
           </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Бизнес-центров</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('businessCenters')}</CardTitle>
               <Building className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -210,7 +215,7 @@ function AnalyticsPage() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Компаний</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('companies')}</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -220,34 +225,34 @@ function AnalyticsPage() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">КТ клиентов</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('ktClients')}</CardTitle>
               <MapPin className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-blue-600">{analytics.ktClients}</div>
               <p className="text-xs text-muted-foreground">
-                {((analytics.ktClients / analytics.totalCompanies) * 100).toFixed(1)}% от общего числа
+                {((analytics.ktClients / analytics.totalCompanies) * 100).toFixed(1)}% {t('fromTotal')}
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Общие доходы</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('totalRevenue')}</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{analytics.totalRevenue.toLocaleString()} тг</div>
+              <div className="text-2xl font-bold">{analytics.totalRevenue.toLocaleString()} {t('currency')}</div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Твои графики */}
+        {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <Card>
             <CardHeader>
-              <CardTitle>Распределение по районам</CardTitle>
-              <CardDescription>Количество бизнес-центров и компаний по районам</CardDescription>
+              <CardTitle>{t('distributionByDistricts')}</CardTitle>
+              <CardDescription>{t('distributionDescription')}</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -257,9 +262,9 @@ function AnalyticsPage() {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="businessCenters" fill="#8884d8" name="БЦ" />
-                  <Bar dataKey="companies" fill="#82ca9d" name="Компании" />
-                  <Bar dataKey="ktClients" fill="#ffc658" name="КТ клиенты" />
+                  <Bar dataKey="businessCenters" fill="#8884d8" name={t('bcAbbr')} />
+                  <Bar dataKey="companies" fill="#82ca9d" name={t('companiesChart')} />
+                  <Bar dataKey="ktClients" fill="#ffc658" name={t('ktClientsChart')} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -267,8 +272,8 @@ function AnalyticsPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Типы зданий</CardTitle>
-              <CardDescription>Распределение по назначению зданий</CardDescription>
+              <CardTitle>{t('buildingTypes')}</CardTitle>
+              <CardDescription>{t('buildingTypesDescription')}</CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -294,12 +299,12 @@ function AnalyticsPage() {
           </Card>
         </div>
 
-        {/* Топы и низкое проникновение */}
+        {/* Top lists and low penetration */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <Card>
             <CardHeader>
-              <CardTitle>Топ бизнес-центров</CardTitle>
-              <CardDescription>По количеству компаний</CardDescription>
+              <CardTitle>{t('topBusinessCenters')}</CardTitle>
+              <CardDescription>{t('topBusinessCentersDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -308,11 +313,11 @@ function AnalyticsPage() {
                     <div>
                       <div className="font-medium">{bc.name}</div>
                       <div className="text-sm text-gray-600">
-                        {bc.companies} компаний • {bc.ktClients} КТ клиентов
+                        {bc.companies} {t('companies')} • {bc.ktClients} {t('ktClients')}
                       </div>
                     </div>
                     <Badge variant="secondary">
-                      {bc.revenue.toLocaleString()} тг
+                      {bc.revenue.toLocaleString()} {t('currency')}
                     </Badge>
                   </div>
                 ))}
@@ -322,8 +327,8 @@ function AnalyticsPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Топ КТ клиентов</CardTitle>
-              <CardDescription>По размеру доходов</CardDescription>
+              <CardTitle>{t('topKtClients')}</CardTitle>
+              <CardDescription>{t('topKtClientsDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -332,11 +337,11 @@ function AnalyticsPage() {
                     <div>
                       <div className="font-medium">{client.name}</div>
                       <div className="text-sm text-gray-600">
-                        {client.businessCenter} • {client.services} услуг
+                        {client.businessCenter} • {client.services} {t('services')}
                       </div>
                     </div>
                     <Badge variant="default" className="bg-blue-600">
-                      {client.revenue.toLocaleString()} тг
+                      {client.revenue.toLocaleString()} {t('currency')}
                     </Badge>
                   </div>
                 ))}
@@ -346,8 +351,8 @@ function AnalyticsPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>БЦ с низким проникновением</CardTitle>
-              <CardDescription>Есть КТ, но большинство — не наши</CardDescription>
+              <CardTitle>{t('lowPenetrationBCs')}</CardTitle>
+              <CardDescription>{t('lowPenetrationDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -356,7 +361,7 @@ function AnalyticsPage() {
                     <div>
                       <div className="font-medium">{bc.name}</div>
                       <div className="text-sm text-gray-600">
-                        {bc.district} • {bc.ktClients} из {bc.totalCompanies} компаний — {bc.penetration}% КТ
+                        {bc.district} • {bc.ktClients} из {bc.totalCompanies} {t('companies')} — {bc.penetration}% {t('ktFilter')}
                       </div>
                     </div>
                     <Badge variant="outline">
@@ -374,3 +379,4 @@ function AnalyticsPage() {
 }
 
 export default AnalyticsPage;
+
