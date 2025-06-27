@@ -7,8 +7,9 @@ import 'leaflet.heat';
 import { Button } from './components/ui/button';
 import { Badge } from './components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
-import { Map, BarChart3, Square, Layers, TrendingUp, Building, Users } from 'lucide-react';
+import { Map, BarChart3, Square, Layers, TrendingUp, Building, Users, Languages } from 'lucide-react';
 import AnalyticsPage from './components/AnalyticsPage';
+import { useTranslation } from './translations';
 import './App.css';
 import data from './assets/data.json';
 
@@ -62,9 +63,9 @@ function getIconForBusinessCenter(bc) {
   return defaultIcon;
 }
 
-
-function Navigation() {
+function Navigation({ language, setLanguage }) {
   const location = useLocation();
+  const { t } = useTranslation(language);
   
   return (
     <div className="bg-white shadow-sm border-b p-4">
@@ -72,28 +73,28 @@ function Navigation() {
         <div className="flex items-center gap-4">
           {/* Логотип Казахтелеком */}
           <img 
-            src="kazakhtelecom_logo.png" 
+            src="/kazakhtelecom_logo.png" 
             alt="Казахтелеком" 
             className="h-12 w-auto"
           />
           <div>
             <h1 className="text-2xl font-bold text-gray-800">
-              Карта Бизнес-Центров Астаны
+              {t('mapTitle')}
             </h1>
             <p className="text-gray-600 mt-1">
-              Интерактивная карта с информацией о компаниях и услугах Казахтелеком
+              {t('mapDescription')}
             </p>
           </div>
         </div>
         
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <Link to="/">
             <Button 
               variant={location.pathname === '/' ? 'default' : 'outline'}
               className="flex items-center gap-2"
             >
               <Map className="w-4 h-4" />
-              Карта
+              {t('mapButton')}
             </Button>
           </Link>
           <Link to="/analytics">
@@ -102,9 +103,19 @@ function Navigation() {
               className="flex items-center gap-2"
             >
               <BarChart3 className="w-4 h-4" />
-              Аналитика
+              {t('analyticsButton')}
             </Button>
           </Link>
+          
+          {/* Language Toggle Button */}
+          <Button
+            onClick={() => setLanguage(language === 'ru' ? 'kk' : 'ru')}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <Languages className="w-4 h-4" />
+            {language === 'ru' ? 'ҚАЗ' : 'РУС'}
+          </Button>
         </div>
       </div>
     </div>
@@ -122,8 +133,11 @@ function MapControls({
   selectedZone,
   clearZone,
   filterType,
-  setFilterType
+  setFilterType,
+  language
 }) {
+  const { t } = useTranslation(language);
+  
   return (
     <div className="map-controls">
       <div className="filter-controls" style={{ marginBottom: '10px' }}>
@@ -133,7 +147,7 @@ function MapControls({
           className="flex items-center gap-2"
         >
           <Users className="w-4 h-4" />
-          Все
+          {t('allFilter')}
         </Button>
         
         <Button
@@ -142,7 +156,7 @@ function MapControls({
           className="flex items-center gap-2"
         >
           <Building className="w-4 h-4" />
-          КТ
+          {t('ktFilter')}
         </Button>
         
         <Button
@@ -151,7 +165,7 @@ function MapControls({
           className="flex items-center gap-2"
         >
           <Building className="w-4 h-4" />
-          не КТ
+          {t('nonKtFilter')}
         </Button>
       </div>
       
@@ -161,7 +175,7 @@ function MapControls({
         className="flex items-center gap-2"
       >
         <Layers className="w-4 h-4" />
-        {showHeatmap ? 'Скрыть тепловую карту' : 'Показать тепловую карту'}
+        {showHeatmap ? t('hideHeatmap') : t('showHeatmap')}
       </Button>
       
       <Button
@@ -170,7 +184,7 @@ function MapControls({
         className="flex items-center gap-2"
       >
         <Building className="w-4 h-4" />
-        {showClusters ? 'Отдельные маркеры' : 'Кластеризация'}
+        {showClusters ? t('separateMarkers') : t('clustering')}
       </Button>
       
       <Button
@@ -179,7 +193,7 @@ function MapControls({
         className="flex items-center gap-2"
       >
         <Square className="w-4 h-4" />
-        {zoneSelectionMode ? 'Отменить выделение' : 'Выделить зону'}
+        {zoneSelectionMode ? t('cancelSelection') : t('selectZone')}
       </Button>
       
       {selectedZone && (
@@ -188,7 +202,7 @@ function MapControls({
           variant="destructive"
           className="flex items-center gap-2"
         >
-          Очистить зону
+          {t('clearZone')}
         </Button>
       )}
     </div>
@@ -196,7 +210,9 @@ function MapControls({
 }
 
 // Component for zone statistics panel
-function ZoneStatsPanel({ selectedZone, businessCenters }) {
+function ZoneStatsPanel({ selectedZone, businessCenters, language }) {
+  const { t } = useTranslation(language);
+  
   if (!selectedZone) return null;
 
   const { bounds } = selectedZone;
@@ -220,28 +236,28 @@ function ZoneStatsPanel({ selectedZone, businessCenters }) {
       <CardHeader className="pb-3">
         <CardTitle className="text-lg flex items-center gap-2">
           <TrendingUp className="w-5 h-5" />
-          Статистика по зоне
+          {t('zoneStats')}
         </CardTitle>
         <CardDescription>
-          Данные по выделенной области
+          {t('zoneStatsDescription')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-600">Бизнес-центров:</span>
+          <span className="text-sm text-gray-600">{t('businessCenters')}</span>
           <Badge variant="secondary">{filteredBCs.length}</Badge>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-600">Компаний:</span>
+          <span className="text-sm text-gray-600">{t('companies')}</span>
           <Badge variant="secondary">{totalCompanies}</Badge>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-600">КТ клиентов:</span>
+          <span className="text-sm text-gray-600">{t('ktClients')}</span>
           <Badge variant="default" className="bg-blue-600">{ktClients}</Badge>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-600">Общий доход:</span>
-          <Badge variant="outline">{totalRevenue.toLocaleString()} тг</Badge>
+          <span className="text-sm text-gray-600">{t('totalRevenue')}</span>
+          <Badge variant="outline">{totalRevenue.toLocaleString()} {t('currency')}</Badge>
         </div>
       </CardContent>
     </Card>
@@ -258,7 +274,8 @@ function MapInteractions({
   setSelectedZone,
   filterType,
   onOrganizationClick,
-  onBusinessCenterClick
+  onBusinessCenterClick,
+  language
 }) {
   const map = useMap();
   const markersRef = useRef(null);
@@ -342,7 +359,7 @@ function MapInteractions({
           icon: getIconForBusinessCenter(bc)
         });
 
-        marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick));
+        marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
         markersRef.current.addLayer(marker);
       });
 
@@ -354,7 +371,7 @@ function MapInteractions({
           icon: getIconForBusinessCenter(bc)
         });
 
-        marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick));
+        marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
         marker.addTo(map);
       });
     }
@@ -367,7 +384,7 @@ function MapInteractions({
         map.removeLayer(heatmapRef.current);
       }
     };
-  }, [map, businessCenters, showHeatmap, showClusters, filterType, onOrganizationClick, onBusinessCenterClick]);
+  }, [map, businessCenters, showHeatmap, showClusters, filterType, onOrganizationClick, onBusinessCenterClick, language]);
 
   // Handle zone selection
   useEffect(() => {
@@ -445,7 +462,9 @@ function MapInteractions({
 }
 
 // Component for organization card modal
-function OrganizationCard({ organization, isOpen, onClose }) {
+function OrganizationCard({ organization, isOpen, onClose, language }) {
+  const { t } = useTranslation(language);
+  
   if (!isOpen || !organization) return null;
 
   return (
@@ -493,18 +512,18 @@ function OrganizationCard({ organization, isOpen, onClose }) {
         
         <div style={{ marginBottom: '16px' }}>
           <div style={{ marginBottom: '8px' }}>
-            <strong style={{ color: '#374151' }}>БИН:</strong>
+            <strong style={{ color: '#374151' }}>{t('bin')}</strong>
             <span style={{ marginLeft: '8px', color: '#6b7280' }}>{organization.bin}</span>
           </div>
           <div style={{ marginBottom: '8px' }}>
-            <strong style={{ color: '#374151' }}>Адрес:</strong>
+            <strong style={{ color: '#374151' }}>{t('address')}</strong>
             <span style={{ marginLeft: '8px', color: '#6b7280' }}>{organization.address}</span>
           </div>
           {organization.accruals > 0 && (
             <div style={{ marginBottom: '8px' }}>
-              <strong style={{ color: '#374151' }}>Начисления:</strong>
+              <strong style={{ color: '#374151' }}>{t('accruals')}</strong>
               <span style={{ marginLeft: '8px', color: '#059669', fontWeight: '600' }}>
-                {organization.accruals.toLocaleString()} тг
+                {organization.accruals.toLocaleString()} {t('currency')}
               </span>
             </div>
           )}
@@ -513,7 +532,7 @@ function OrganizationCard({ organization, isOpen, onClose }) {
         {organization.is_kt_client && organization.services && organization.services.length > 0 && (
           <div>
             <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#374151', marginBottom: '12px' }}>
-              Услуги Казахтелеком:
+              {t('ktServices')}
             </h3>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {organization.services.map((service, index) => (
@@ -540,7 +559,9 @@ function OrganizationCard({ organization, isOpen, onClose }) {
 }
 
 // Component for business center card modal
-function BusinessCenterCard({ businessCenter, isOpen, onClose, onOrganizationClick }) {
+function BusinessCenterCard({ businessCenter, isOpen, onClose, onOrganizationClick, language }) {
+  const { t } = useTranslation(language);
+  
   if (!isOpen || !businessCenter) return null;
 
   const ktClients = businessCenter.companies.filter(c => c.is_kt_client);
@@ -592,21 +613,21 @@ function BusinessCenterCard({ businessCenter, isOpen, onClose, onOrganizationCli
         
         <div style={{ marginBottom: '20px' }}>
           <div style={{ marginBottom: '8px' }}>
-            <strong style={{ color: '#374151' }}>Адрес:</strong>
+            <strong style={{ color: '#374151' }}>{t('address')}</strong>
             <span style={{ marginLeft: '8px', color: '#6b7280' }}>{businessCenter.address}</span>
           </div>
           <div style={{ marginBottom: '8px' }}>
-            <strong style={{ color: '#374151' }}>Всего компаний:</strong>
+            <strong style={{ color: '#374151' }}>{t('totalCompanies')}</strong>
             <span style={{ marginLeft: '8px', color: '#6b7280' }}>{businessCenter.companies.length}</span>
           </div>
           <div style={{ marginBottom: '8px' }}>
-            <strong style={{ color: '#374151' }}>КТ клиентов:</strong>
+            <strong style={{ color: '#374151' }}>{t('ktClientsCard')}</strong>
             <span style={{ marginLeft: '8px', color: '#2563eb', fontWeight: '600' }}>{ktClients.length}</span>
           </div>
           <div style={{ marginBottom: '8px' }}>
-            <strong style={{ color: '#374151' }}>Общий доход:</strong>
+            <strong style={{ color: '#374151' }}>{t('totalRevenue')}</strong>
             <span style={{ marginLeft: '8px', color: '#059669', fontWeight: '600' }}>
-              {totalRevenue.toLocaleString()} тг
+              {totalRevenue.toLocaleString()} {t('currency')}
             </span>
           </div>
         </div>
@@ -614,7 +635,7 @@ function BusinessCenterCard({ businessCenter, isOpen, onClose, onOrganizationCli
         {ktClients.length > 0 && (
           <div style={{ marginBottom: '20px' }}>
             <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#374151', marginBottom: '12px' }}>
-              КТ клиенты:
+              {t('ktClientsCard')}
             </h3>
             <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
               {ktClients.map((company, index) => (
@@ -636,7 +657,7 @@ function BusinessCenterCard({ businessCenter, isOpen, onClose, onOrganizationCli
                   <div style={{ fontWeight: '500', color: '#1f2937' }}>{company.organization_name}</div>
                   {company.accruals > 0 && (
                     <div style={{ fontSize: '12px', color: '#059669' }}>
-                      {company.accruals.toLocaleString()} тг
+                      {company.accruals.toLocaleString()} {t('currency')}
                     </div>
                   )}
                 </div>
@@ -648,7 +669,7 @@ function BusinessCenterCard({ businessCenter, isOpen, onClose, onOrganizationCli
         {nonKtClients.length > 0 && (
           <div>
             <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#374151', marginBottom: '12px' }}>
-              Другие компании:
+              {t('otherCompanies')}
             </h3>
             <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
               {nonKtClients.map((company, index) => (
@@ -679,7 +700,8 @@ function BusinessCenterCard({ businessCenter, isOpen, onClose, onOrganizationCli
 }
 
 // Helper function to render company popup content
-function renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick) {
+function renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language) {
+  const { t } = useTranslation(language);
   const ktClients = bc.companies.filter(c => c.is_kt_client);
   const nonKtClients = bc.companies.filter(c => !c.is_kt_client);
   const totalRevenue = bc.companies.reduce((sum, c) => sum + (c.accruals || 0), 0);
@@ -696,28 +718,28 @@ function renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick) {
       
       <div style="margin-bottom: 12px;">
         <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-          <span style="font-size: 12px; color: #6b7280;">Всего компаний:</span>
+          <span style="font-size: 12px; color: #6b7280;">${t('totalCompanies')}</span>
           <span style="font-size: 12px; font-weight: 600;">${bc.companies.length}</span>
         </div>
         <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-          <span style="font-size: 12px; color: #6b7280;">КТ клиентов:</span>
+          <span style="font-size: 12px; color: #6b7280;">${t('ktClients')}</span>
           <span style="font-size: 12px; font-weight: 600; color: #2563eb;">${ktClients.length}</span>
         </div>
         <div style="display: flex; justify-content: space-between;">
-          <span style="font-size: 12px; color: #6b7280;">Общий доход:</span>
-          <span style="font-size: 12px; font-weight: 600; color: #059669;">${totalRevenue.toLocaleString()} тг</span>
+          <span style="font-size: 12px; color: #6b7280;">${t('totalRevenue')}</span>
+          <span style="font-size: 12px; font-weight: 600; color: #059669;">${totalRevenue.toLocaleString()} ${t('currency')}</span>
         </div>
       </div>
 
       ${ktClients.length > 0 ? `
         <div style="margin-bottom: 12px;">
-          <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #374151;">КТ клиенты:</h4>
+          <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #374151;">${t('ktClientsCard')}</h4>
           <div style="max-height: 120px; overflow-y: auto;">
             ${ktClients.slice(0, 5).map(company => `
               <div style="padding: 4px 8px; margin-bottom: 2px; background-color: #f8fafc; border-radius: 4px; cursor: pointer; border: 1px solid #e2e8f0;"
                    onclick="window.handleOrganizationClick('${company.bin}')">
                 <div style="font-size: 12px; font-weight: 500; color: #1f2937;">${company.organization_name}</div>
-                ${company.accruals > 0 ? `<div style="font-size: 10px; color: #059669;">${company.accruals.toLocaleString()} тг</div>` : ''}
+                ${company.accruals > 0 ? `<div style="font-size: 10px; color: #059669;">${company.accruals.toLocaleString()} ${t('currency')}</div>` : ''}
               </div>
             `).join('')}
             ${ktClients.length > 5 ? `<div style="font-size: 11px; color: #6b7280; text-align: center; margin-top: 4px;">и еще ${ktClients.length - 5}...</div>` : ''}
@@ -727,7 +749,7 @@ function renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick) {
 
       ${nonKtClients.length > 0 ? `
         <div>
-          <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #374151;">Другие компании:</h4>
+          <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #374151;">${t('otherCompanies')}</h4>
           <div style="max-height: 100px; overflow-y: auto;">
             ${nonKtClients.slice(0, 3).map(company => `
               <div style="padding: 4px 8px; margin-bottom: 2px; background-color: #f8fafc; border-radius: 4px; cursor: pointer; border: 1px solid #e2e8f0;"
@@ -753,6 +775,7 @@ function App() {
   const [filterType, setFilterType] = useState('all');
   const [selectedOrganization, setSelectedOrganization] = useState(null);
   const [selectedBusinessCenter, setSelectedBusinessCenter] = useState(null);
+  const [language, setLanguage] = useState('ru');
 
   useEffect(() => {
     setBusinessCenters(data);
@@ -798,7 +821,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Navigation />
+        <Navigation language={language} setLanguage={setLanguage} />
         
         <Routes>
           <Route path="/" element={
@@ -814,11 +837,13 @@ function App() {
                 clearZone={clearZone}
                 filterType={filterType}
                 setFilterType={setFilterType}
+                language={language}
               />
               
               <ZoneStatsPanel 
                 selectedZone={selectedZone}
                 businessCenters={businessCenters}
+                language={language}
               />
               
               <MapContainer 
@@ -841,6 +866,7 @@ function App() {
                   filterType={filterType}
                   onOrganizationClick={handleOrganizationClick}
                   onBusinessCenterClick={handleBusinessCenterClick}
+                  language={language}
                 />
               </MapContainer>
               
@@ -848,6 +874,7 @@ function App() {
                 organization={selectedOrganization}
                 isOpen={!!selectedOrganization}
                 onClose={() => setSelectedOrganization(null)}
+                language={language}
               />
               
               <BusinessCenterCard 
@@ -855,10 +882,11 @@ function App() {
                 isOpen={!!selectedBusinessCenter}
                 onClose={() => setSelectedBusinessCenter(null)}
                 onOrganizationClick={handleOrganizationClick}
+                language={language}
               />
             </div>
           } />
-          <Route path="/analytics" element={<AnalyticsPage businessCenters={businessCenters} />} />
+          <Route path="/analytics" element={<AnalyticsPage businessCenters={businessCenters} language={language} />} />
         </Routes>
       </div>
     </Router>
