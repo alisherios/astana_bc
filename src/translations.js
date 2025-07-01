@@ -53,6 +53,11 @@ export const translations = {
     // Currency
     currency: "тг",
     
+    // Map Legend
+    legend: "Легенда",
+    regularMarkers: "Обычные БЦ",
+    lowPenetrationMarkers: "БЦ с проникновением < 30%",
+    
     // Analytics Page Specific
     selectDistrict: "Выберите район",
     selectBuildingType: "Тип здания",
@@ -123,6 +128,11 @@ export const translations = {
     
     // Currency
     currency: "тг",
+    
+    // Map Legend
+    legend: "Легенда",
+    regularMarkers: "Қарапайым БО",
+    lowPenetrationMarkers: "Енгізу деңгейі < 30% БО",
     
     // Analytics Page Specific
     selectDistrict: "Ауданды таңдаңыз",
