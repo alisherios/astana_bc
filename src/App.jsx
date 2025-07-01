@@ -127,7 +127,7 @@ function MapLegend({ language }) {
   const { t } = useTranslation(language);
   
   return (
-    <Card className="map-legend">
+    <Card className="map-legend absolute bottom-4 left-4 z-[1000]">
       <CardHeader className="pb-3">
         <CardTitle className="text-sm flex items-center gap-2">
           <Info className="w-4 h-4" />
@@ -474,13 +474,6 @@ function MapInteractions({
       }
       setSelectedZone(null);
       map.getContainer().style.cursor = '';
-    }
-
-    return () => {
-      map.off('mousedown', handleMouseDown);
-      map.off('mousemove', handleMouseMove);
-      map.off('mouseup', handleMouseUp);
-      map.getContainer().style.cursor = '';
     };
   }, [map, zoneSelectionMode, setSelectedZone]);
 
@@ -607,119 +600,84 @@ function BusinessCenterCard({ businessCenter, isOpen, onClose, onOrganizationCli
       justifyContent: 'center',
       zIndex: 10000
     }}>
-      <div className="business-center-card" style={{
-        backgroundColor: 'white',
-        borderRadius: '8px',
-        padding: '24px',
-        maxWidth: '600px',
-        width: '90%',
-        maxHeight: '80vh',
-        overflowY: 'auto',
-        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)'
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
-          <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold', color: '#1f2937' }}>
+      <div className="business-center-card bg-white rounded-lg shadow-xl p-6 w-[90%] max-w-2xl max-h-[90vh] flex flex-col">
+        <div className="flex justify-between items-start mb-4">
+          <h2 className="text-2xl font-bold text-gray-800">
             {businessCenter.business_center_name || businessCenter.name || 'Неизвестный БЦ'}
           </h2>
           <button 
             onClick={onClose}
-            style={{
-              background: 'none',
-              border: 'none',
-              fontSize: '24px',
-              cursor: 'pointer',
-              color: '#6b7280',
-              padding: '0',
-              marginLeft: '16px'
-            }}
+            className="text-gray-500 hover:text-gray-700 text-3xl leading-none"
           >
             ×
           </button>
         </div>
         
-        <div style={{ marginBottom: '20px' }}>
-          <div style={{ marginBottom: '8px' }}>
-            <strong style={{ color: '#374151' }}>{t('address')}</strong>
-            <span style={{ marginLeft: '8px', color: '#6b7280' }}>{businessCenter.address}</span>
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <div>
+            <strong className="text-gray-700">{t('address')}</strong>
+            <p className="text-gray-600">{businessCenter.address}</p>
           </div>
-          <div style={{ marginBottom: '8px' }}>
-            <strong style={{ color: '#374151' }}>{t('totalCompanies')}</strong>
-            <span style={{ marginLeft: '8px', color: '#6b7280' }}>{businessCenter.companies.length}</span>
+          <div>
+            <strong className="text-gray-700">{t('totalCompanies')}</strong>
+            <p className="text-gray-600">{businessCenter.companies.length}</p>
           </div>
-          <div style={{ marginBottom: '8px' }}>
-            <strong style={{ color: '#374151' }}>{t('ktClientsCard')}</strong>
-            <span style={{ marginLeft: '8px', color: '#2563eb', fontWeight: '600' }}>{ktClients.length}</span>
+          <div>
+            <strong className="text-gray-700">{t('ktClientsCard')}</strong>
+            <p className="text-blue-600 font-semibold">{ktClients.length}</p>
           </div>
-          <div style={{ marginBottom: '8px' }}>
-            <strong style={{ color: '#374151' }}>{t('totalRevenue')}</strong>
-            <span style={{ marginLeft: '8px', color: '#059669', fontWeight: '600' }}>
+          <div>
+            <strong className="text-gray-700">{t('totalRevenue')}</strong>
+            <p className="text-green-600 font-semibold">
               {totalRevenue.toLocaleString()} {t('currency')}
-            </span>
+            </p>
           </div>
         </div>
 
-        {ktClients.length > 0 && (
-          <div style={{ marginBottom: '20px' }}>
-            <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#374151', marginBottom: '12px' }}>
-              {t('ktClientsCard')}
-            </h3>
-            <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
-              {ktClients.map((company, index) => (
-                <div 
-                  key={index}
-                  onClick={() => onOrganizationClick(company)}
-                  style={{
-                    padding: '8px 12px',
-                    marginBottom: '4px',
-                    backgroundColor: '#f8fafc',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    border: '1px solid #e2e8f0',
-                    transition: 'background-color 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#e2e8f0'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = '#f8fafc'}
-                >
-                  <div style={{ fontWeight: '500', color: '#1f2937' }}>{company.organization_name}</div>
-                  {company.accruals > 0 && (
-                    <div style={{ fontSize: '12px', color: '#059669' }}>
-                      {company.accruals.toLocaleString()} {t('currency')}
-                    </div>
-                  )}
-                </div>
-              ))}
+        <div className="flex-grow overflow-y-auto pr-2">
+          {ktClients.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-gray-700 mb-3">
+                {t('ktClientsCard')}
+              </h3>
+              <div className="space-y-2">
+                {ktClients.map((company, index) => (
+                  <div 
+                    key={index}
+                    onClick={() => onOrganizationClick(company)}
+                    className="p-3 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors duration-200"
+                  >
+                    <div className="font-medium text-gray-800">{company.organization_name}</div>
+                    {company.accruals > 0 && (
+                      <div className="text-sm text-green-600">
+                        {company.accruals.toLocaleString()} {t('currency')}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {nonKtClients.length > 0 && (
-          <div>
-            <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#374151', marginBottom: '12px' }}>
-              {t('otherCompanies')}
-            </h3>
-            <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
-              {nonKtClients.map((company, index) => (
-                <div 
-                  key={index}
-                  onClick={() => onOrganizationClick(company)}
-                  style={{
-                    padding: '8px 12px',
-                    marginBottom: '4px',
-                    backgroundColor: '#f8fafc',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    border: '1px solid #e2e8f0',
-                    transition: 'background-color 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#e2e8f0'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = '#f8fafc'}
-                >
-                  <div style={{ fontWeight: '500', color: '#1f2937' }}>{company.organization_name}</div>
-                </div>
-              ))}
+          {nonKtClients.length > 0 && (
+            <div>
+              <h3 className="text-lg font-semibold text-gray-700 mb-3">
+                {t('otherCompanies')}
+              </h3>
+              <div className="space-y-2">
+                {nonKtClients.map((company, index) => (
+                  <div 
+                    key={index}
+                    onClick={() => onOrganizationClick(company)}
+                    className="p-3 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors duration-200"
+                  >
+                    <div className="font-medium text-gray-800">{company.organization_name}</div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
@@ -734,7 +692,7 @@ function renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, lang
   const businessCenterName = bc.business_center_name || bc.name || 'Неизвестный БЦ';
 
   return `
-    <div style="min-width: 250px; max-width: 300px;">
+    <div style="min-width: 250px; max-width: 300px; font-family: sans-serif;">
       <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 12px;">
         <h3 style="margin: 0; font-size: 16px; font-weight: bold; color: #1f2937; cursor: pointer;" 
             onclick="window.handleBusinessCenterClick('${bc.id}')">
@@ -762,14 +720,13 @@ function renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, lang
         <div style="margin-bottom: 12px;">
           <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #374151;">${t('ktClientsCard')}</h4>
           <div style="max-height: 120px; overflow-y: auto;">
-            ${ktClients.slice(0, 5).map(company => `
+            ${ktClients.map(company => `
               <div style="padding: 4px 8px; margin-bottom: 2px; background-color: #f8fafc; border-radius: 4px; cursor: pointer; border: 1px solid #e2e8f0;"
                    onclick="window.handleOrganizationClick('${company.bin}')">
                 <div style="font-size: 12px; font-weight: 500; color: #1f2937;">${company.organization_name}</div>
                 ${company.accruals > 0 ? `<div style="font-size: 10px; color: #059669;">${company.accruals.toLocaleString()} ${t('currency')}</div>` : ''}
               </div>
             `).join('')}
-            ${ktClients.length > 5 ? `<div style="font-size: 11px; color: #6b7280; text-align: center; margin-top: 4px;">и еще ${ktClients.length - 5}...</div>` : ''}
           </div>
         </div>
       ` : ''}
@@ -778,13 +735,12 @@ function renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, lang
         <div>
           <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #374151;">${t('otherCompanies')}</h4>
           <div style="max-height: 100px; overflow-y: auto;">
-            ${nonKtClients.slice(0, 3).map(company => `
+            ${nonKtClients.map(company => `
               <div style="padding: 4px 8px; margin-bottom: 2px; background-color: #f8fafc; border-radius: 4px; cursor: pointer; border: 1px solid #e2e8f0;"
                    onclick="window.handleOrganizationClick('${company.bin}')">
                 <div style="font-size: 12px; font-weight: 500; color: #1f2937;">${company.organization_name}</div>
               </div>
             `).join('')}
-            ${nonKtClients.length > 3 ? `<div style="font-size: 11px; color: #6b7280; text-align: center; margin-top: 4px;">и еще ${nonKtClients.length - 3}...</div>` : ''}
           </div>
         </div>
       ` : ''}
