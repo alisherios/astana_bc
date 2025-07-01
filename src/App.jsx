@@ -7,7 +7,7 @@ import 'leaflet.heat';
 import { Button } from './components/ui/button';
 import { Badge } from './components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
-import { Map, BarChart3, Square, Layers, TrendingUp, Building, Users, Languages } from 'lucide-react';
+import { Map, BarChart3, Square, Layers, TrendingUp, Building, Users, Languages, Info } from 'lucide-react';
 import AnalyticsPage from './components/AnalyticsPage';
 import { useTranslation } from './translations';
 import './App.css';
@@ -119,6 +119,32 @@ function Navigation({ language, setLanguage }) {
         </div>
       </div>
     </div>
+  );
+}
+
+// Component for map legend
+function MapLegend({ language }) {
+  const { t } = useTranslation(language);
+  
+  return (
+    <Card className="map-legend">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-sm flex items-center gap-2">
+          <Info className="w-4 h-4" />
+          {t('legend')}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-gray-500 rounded-full"></div>
+          <span className="text-xs text-gray-600">{t('regularMarkers')}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-yellow-500 rounded-full"></div>
+          <span className="text-xs text-gray-600">{t('lowPenetrationMarkers')}</span>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -593,7 +619,7 @@ function BusinessCenterCard({ businessCenter, isOpen, onClose, onOrganizationCli
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
           <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold', color: '#1f2937' }}>
-            {businessCenter.name}
+            {businessCenter.business_center_name || businessCenter.name || 'Неизвестный БЦ'}
           </h2>
           <button 
             onClick={onClose}
@@ -705,13 +731,14 @@ function renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, lang
   const ktClients = bc.companies.filter(c => c.is_kt_client);
   const nonKtClients = bc.companies.filter(c => !c.is_kt_client);
   const totalRevenue = bc.companies.reduce((sum, c) => sum + (c.accruals || 0), 0);
+  const businessCenterName = bc.business_center_name || bc.name || 'Неизвестный БЦ';
 
   return `
     <div style="min-width: 250px; max-width: 300px;">
       <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 12px;">
         <h3 style="margin: 0; font-size: 16px; font-weight: bold; color: #1f2937; cursor: pointer;" 
             onclick="window.handleBusinessCenterClick('${bc.id}')">
-          ${bc.name}
+          ${businessCenterName}
         </h3>
         <p style="margin: 4px 0 0 0; font-size: 12px; color: #6b7280;">${bc.address}</p>
       </div>
@@ -839,6 +866,8 @@ function App() {
                 setFilterType={setFilterType}
                 language={language}
               />
+              
+              <MapLegend language={language} />
               
               <ZoneStatsPanel 
                 selectedZone={selectedZone}
