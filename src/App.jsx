@@ -14,60 +14,49 @@ import './App.css';
 import data from './assets/data.json';
 import providersData from './assets/providers_data.json';
 
-// Fix for default markers in react-leaflet
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-} );
+// --- НОВЫЙ БЛОК ИКОНОК ---
 
-// Default icon for regular business centers
-const defaultIcon = new L.Icon({
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-} );
+// Иконка для Бизнес-Центров (Здание)
+const createBuildingIcon = (color = '#60A5FA') => { // Default: синий
+  return L.divIcon({
+    html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}" stroke="white" stroke-width="1">
+             <path d="M4 21V10.083L12 3l8 7.083V21H4zM18 21V11l-6-5.25L6 11v10h12z"/>
+             <path d="M9 18h6v-4H9v4zm-2 0h1v-4H7v4zm8 0h1v-4h-1v4zM9 12h6V9H9v3z"/>
+           </svg>`,
+    className: 'custom-leaflet-icon',
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32],
+  } );
+};
 
-const lowPenetrationIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-} );
+// Иконка для Провайдеров (Wi-Fi)
+const createWifiIcon = (color = '#34D399') => { // Default: зеленый
+  return L.divIcon({
+    html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}" stroke="white" stroke-width="0.5">
+             <path d="M12 4.5C7.31 4.5 3.19 6.07 0 8.5l12 12 12-12C20.81 6.07 16.69 4.5 12 4.5z"/>
+             <path d="M12 9c-2.97 0-5.74.88-8.07 2.44l8.07 8.07 8.07-8.07C17.74 9.88 14.97 9 12 9z"/>
+           </svg>`,
+    className: 'custom-leaflet-icon',
+    iconSize: [28, 28],
+    iconAnchor: [14, 28],
+    popupAnchor: [0, -28],
+  } );
+};
 
-// Provider icons based on speed
-const highSpeedProviderIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [20, 32],
-  iconAnchor: [10, 32],
-  popupAnchor: [1, -28],
-  shadowSize: [32, 32]
-} );
+// Цвета для иконок
+const BC_COLORS = {
+  default: '#71717A', // Серый
+  lowPenetration: '#F59E0B', // Желтый
+};
 
-const mediumSpeedProviderIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [20, 32],
-  iconAnchor: [10, 32],
-  popupAnchor: [1, -28],
-  shadowSize: [32, 32]
-} );
+const PROVIDER_COLORS = {
+  highSpeed: '#10B981', // Зеленый
+  mediumSpeed: '#F97316', // Оранжевый
+  lowSpeed: '#EF4444', // Красный
+};
 
-const lowSpeedProviderIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [20, 32],
-  iconAnchor: [10, 32],
-  popupAnchor: [1, -28],
-  shadowSize: [32, 32]
-} );
+// --- КОНЕЦ НОВОГО БЛОКА ИКОНОК ---
 
 function getPenetrationRate(bc) {
   const total = bc.companies.length;
@@ -75,24 +64,28 @@ function getPenetrationRate(bc) {
   return total === 0 ? 0 : (kt / total) * 100;
 }
 
+// --- ОБНОВЛЕННЫЕ ФУНКЦИИ ВЫБОРА ИКОНОК ---
+
 function getIconForBusinessCenter(bc) {
   const penetration = getPenetrationRate(bc);
   if (penetration > 0 && penetration < 30) {
-    return lowPenetrationIcon;
+    return createBuildingIcon(BC_COLORS.lowPenetration);
   }
-  return defaultIcon;
+  return createBuildingIcon(BC_COLORS.default);
 }
 
 function getIconForProvider(provider) {
   const downloadSpeed = provider.val_download_mbps;
   if (downloadSpeed >= 100) {
-    return highSpeedProviderIcon;
+    return createWifiIcon(PROVIDER_COLORS.highSpeed);
   } else if (downloadSpeed >= 50) {
-    return mediumSpeedProviderIcon;
+    return createWifiIcon(PROVIDER_COLORS.mediumSpeed);
   } else {
-    return lowSpeedProviderIcon;
+    return createWifiIcon(PROVIDER_COLORS.lowSpeed);
   }
 }
+
+// --- КОНЕЦ ОБНОВЛЕННЫХ ФУНКЦИЙ ---
 
 function Navigation({ language, setLanguage }) {
   const location = useLocation();
@@ -164,25 +157,25 @@ function MapLegend({ language, showProviders }) {
       </CardHeader>
       <CardContent className="space-y-2">
         <div className="flex items-center gap-2">
-          <img src={defaultIcon.options.iconUrl} alt="Regular" style={{width: 12, height: 20}} />
+          <div className="w-5 h-5" dangerouslySetInnerHTML={{ __html: createBuildingIcon(BC_COLORS.default).options.html }} />
           <span className="text-xs text-gray-600">{t('regularMarkers')}</span>
         </div>
         <div className="flex items-center gap-2">
-          <img src={lowPenetrationIcon.options.iconUrl} alt="Low Penetration" style={{width: 12, height: 20}} />
+          <div className="w-5 h-5" dangerouslySetInnerHTML={{ __html: createBuildingIcon(BC_COLORS.lowPenetration).options.html }} />
           <span className="text-xs text-gray-600">{t('lowPenetrationMarkers')}</span>
         </div>
         {showProviders && (
           <>
             <div className="flex items-center gap-2">
-              <img src={highSpeedProviderIcon.options.iconUrl} alt="High Speed" style={{width: 10, height: 16}} />
+              <div className="w-4 h-4" dangerouslySetInnerHTML={{ __html: createWifiIcon(PROVIDER_COLORS.highSpeed).options.html }} />
               <span className="text-xs text-gray-600">{t('highSpeedProviders')}</span>
             </div>
             <div className="flex items-center gap-2">
-              <img src={mediumSpeedProviderIcon.options.iconUrl} alt="Medium Speed" style={{width: 10, height: 16}} />
+              <div className="w-4 h-4" dangerouslySetInnerHTML={{ __html: createWifiIcon(PROVIDER_COLORS.mediumSpeed).options.html }} />
               <span className="text-xs text-gray-600">{t('mediumSpeedProviders')}</span>
             </div>
             <div className="flex items-center gap-2">
-              <img src={lowSpeedProviderIcon.options.iconUrl} alt="Low Speed" style={{width: 10, height: 16}} />
+              <div className="w-4 h-4" dangerouslySetInnerHTML={{ __html: createWifiIcon(PROVIDER_COLORS.lowSpeed).options.html }} />
               <span className="text-xs text-gray-600">{t('lowSpeedProviders')}</span>
             </div>
           </>
