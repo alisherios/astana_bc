@@ -16,12 +16,14 @@ import providersData from './assets/providers_data.json';
 
 // --- НОВЫЙ БЛОК ИКОНОК ---
 
-// Иконка для Бизнес-Центров (Здание)
-const createBuildingIcon = (color = '#60A5FA') => { // Default: синий
+const createBuildingIcon = (color = '#60A5FA') => {
   return L.divIcon({
-    html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}" stroke="white" stroke-width="1">
-             <path d="M4 21V10.083L12 3l8 7.083V21H4zM18 21V11l-6-5.25L6 11v10h12z"/>
-             <path d="M9 18h6v-4H9v4zm-2 0h1v-4H7v4zm8 0h1v-4h-1v4zM9 12h6V9H9v3z"/>
+    html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}" stroke="#333" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+             <path d="M21 21H3V10L12 3l9 7v11z" />
+             <path d="M7 21V11" />
+             <path d="M17 21V11" />
+             <path d="M7 11h10" />
+             <rect x="9" y="15" width="6" height="6" />
            </svg>`,
     className: 'custom-leaflet-icon',
     iconSize: [32, 32],
