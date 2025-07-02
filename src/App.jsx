@@ -20,7 +20,7 @@ L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-});
+} );
 
 // Custom icon for KT clients
 const ktClientIcon = new L.Icon({
@@ -30,7 +30,7 @@ const ktClientIcon = new L.Icon({
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
   shadowSize: [41, 41]
-});
+} );
 
 // Default icon for regular business centers
 const defaultIcon = new L.Icon({
@@ -40,7 +40,7 @@ const defaultIcon = new L.Icon({
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
   shadowSize: [41, 41]
-});
+} );
 
 const lowPenetrationIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png',
@@ -49,7 +49,7 @@ const lowPenetrationIcon = new L.Icon({
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
   shadowSize: [41, 41]
-});
+} );
 
 // Provider icons based on speed
 const highSpeedProviderIcon = new L.Icon({
@@ -59,7 +59,7 @@ const highSpeedProviderIcon = new L.Icon({
   iconAnchor: [10, 32],
   popupAnchor: [1, -28],
   shadowSize: [32, 32]
-});
+} );
 
 const mediumSpeedProviderIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
@@ -68,7 +68,7 @@ const mediumSpeedProviderIcon = new L.Icon({
   iconAnchor: [10, 32],
   popupAnchor: [1, -28],
   shadowSize: [32, 32]
-});
+} );
 
 const lowSpeedProviderIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
@@ -77,7 +77,7 @@ const lowSpeedProviderIcon = new L.Icon({
   iconAnchor: [10, 32],
   popupAnchor: [1, -28],
   shadowSize: [32, 32]
-});
+} );
 
 function getPenetrationRate(bc) {
   const total = bc.companies.length;
@@ -176,19 +176,20 @@ function MapLegend({ language, showProviders }) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
-        {!showProviders ? (
+        {/* Always show BC legend */}
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-gray-500 rounded-full"></div>
+          <span className="text-xs text-gray-600">{t('regularMarkers')}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-yellow-500 rounded-full"></div>
+          <span className="text-xs text-gray-600">{t('lowPenetrationMarkers')}</span>
+        </div>
+        
+        {/* Show provider legend only when they are visible */}
+        {showProviders && (
           <>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-gray-500 rounded-full"></div>
-              <span className="text-xs text-gray-600">{t('regularMarkers')}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-yellow-500 rounded-full"></div>
-              <span className="text-xs text-gray-600">{t('lowPenetrationMarkers')}</span>
-            </div>
-          </>
-        ) : (
-          <>
+            <hr className="my-2"/>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>
               <span className="text-xs text-gray-600">{t('highSpeedProviders')}</span>
@@ -328,20 +329,14 @@ function ZoneStatsPanel({ selectedZone, businessCenters, language }) {
   if (!selectedZone) return null;
 
   const isPointInPolygon = (point, vs) => {
-    // ray-casting algorithm based on
-    // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
-
     var x = point[0], y = point[1];
-
     var inside = false;
     for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
         var xi = vs[i][0], yi = vs[i][1];
         var xj = vs[j][0], yj = vs[j][1];
-
         var intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
         if (intersect) inside = !inside;
     }
-
     return inside;
   };
 
@@ -417,19 +412,19 @@ function MapInteractions({
   polygonPoints,
   setPolygonPoints,
   finishPolygon,
-  showProviders // <--- Этот проп уже есть, отлично
+  showProviders
 }) {
   const map = useMap();
   const markersRef = useRef(null);
   const heatmapRef = useRef(null);
   const currentPolygonRef = useRef(null);
-  const providersMarkersRef = useRef(null); // <-- Реф для слоя провайдеров
+  const providersMarkersRef = useRef(null);
 
-  // Эффект для отображения бизнес-центров
+  // Effect for displaying business centers
   useEffect(() => {
     if (!map) return;
 
-    // Очищаем старые слои БЦ
+    // Clear old BC layers
     if (markersRef.current) {
       map.removeLayer(markersRef.current);
       markersRef.current = null;
@@ -439,7 +434,7 @@ function MapInteractions({
       heatmapRef.current = null;
     }
 
-    // Фильтруем БЦ как и раньше
+    // Filter business centers
     let filteredBusinessCenters = businessCenters;
     if (filterType === 'kt') {
       filteredBusinessCenters = businessCenters.filter(bc =>
@@ -451,7 +446,7 @@ function MapInteractions({
       );
     }
 
-    // Тепловая карта (если включена)
+    // Heatmap layer (if enabled)
     if (showHeatmap) {
       const heatmapData = filteredBusinessCenters.map(bc => {
         const ktClientsCount = bc.companies.filter(c => c.is_kt_client).length;
@@ -467,25 +462,15 @@ function MapInteractions({
       }).addTo(map);
     }
 
-    // Маркеры БЦ (кластеризованные или обычные)
-    if (showClusters) {
-      markersRef.current = L.markerClusterGroup();
-      filteredBusinessCenters.forEach(bc => {
-        const marker = L.marker([bc.latitude, bc.longitude], { icon: getIconForBusinessCenter(bc) });
-        marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
-        markersRef.current.addLayer(marker);
-      });
-      map.addLayer(markersRef.current);
-    } else {
-      // Если не кластеризация, создаем группу для простоты управления
-      markersRef.current = L.layerGroup();
-      filteredBusinessCenters.forEach(bc => {
-        const marker = L.marker([bc.latitude, bc.longitude], { icon: getIconForBusinessCenter(bc) });
-        marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
-        markersRef.current.addLayer(marker);
-      });
-      map.addLayer(markersRef.current);
-    }
+    // BC markers (clustered or individual)
+    const markerLayer = showClusters ? L.markerClusterGroup() : L.layerGroup();
+    filteredBusinessCenters.forEach(bc => {
+      const marker = L.marker([bc.latitude, bc.longitude], { icon: getIconForBusinessCenter(bc) });
+      marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
+      markerLayer.addLayer(marker);
+    });
+    markersRef.current = markerLayer;
+    map.addLayer(markersRef.current);
 
     return () => {
       if (markersRef.current) {
@@ -497,14 +482,13 @@ function MapInteractions({
     };
   }, [map, businessCenters, showHeatmap, showClusters, filterType, onOrganizationClick, onBusinessCenterClick, language]);
 
-
-  // Отдельный эффект для отображения провайдеров
+  // Separate effect for displaying providers
   useEffect(() => {
     if (!map) return;
 
-    // Если нужно показать провайдеров и слоя еще нет
+    // If providers should be shown and the layer doesn't exist yet
     if (showProviders && !providersMarkersRef.current) {
-      providersMarkersRef.current = L.markerClusterGroup(); // Используем кластеризацию для провайдеров
+      providersMarkersRef.current = L.markerClusterGroup(); // Always cluster providers for performance
       providers.forEach(provider => {
         const marker = L.marker([provider.attr_location_latitude, provider.attr_location_longitude], {
           icon: getIconForProvider(provider)
@@ -514,13 +498,13 @@ function MapInteractions({
       });
       map.addLayer(providersMarkersRef.current);
     }
-    // Если нужно скрыть провайдеров и слой существует
+    // If providers should be hidden and the layer exists
     else if (!showProviders && providersMarkersRef.current) {
       map.removeLayer(providersMarkersRef.current);
       providersMarkersRef.current = null;
     }
 
-    // Функция очистки при размонтировании компонента
+    // Cleanup function for when the component unmounts
     return () => {
       if (providersMarkersRef.current) {
         map.removeLayer(providersMarkersRef.current);
@@ -529,8 +513,7 @@ function MapInteractions({
     };
   }, [map, providers, showProviders, onProviderClick, language]);
 
-
-  // Эффект для рисования полигона (остается без изменений)
+  // Effect for polygon drawing (remains unchanged)
   useEffect(() => {
     if (!map) return;
 
@@ -556,125 +539,7 @@ function MapInteractions({
     };
   }, [map, zoneSelectionMode, setPolygonPoints]);
 
-  // Эффект для отрисовки текущего полигона (остается без изменений)
-  useEffect(() => {
-    if (currentPolygonRef.current) {
-      map.removeLayer(currentPolygonRef.current);
-    }
-    if (polygonPoints.length > 1) {
-      currentPolygonRef.current = L.polygon(polygonPoints, { color: '#3b82f6', weight: 2, fillOpacity: 0.1 }).addTo(map);
-    }
-  }, [map, polygonPoints]);
-
-  return (
-    selectedZone && selectedZone.type === 'polygon' && (
-      <Polygon positions={selectedZone.points} color="#3b82f6" weight={2} fillOpacity={0.1} />
-    )
-  );
-}
-      // Add heatmap layer
-      if (showHeatmap) {
-        heatmapRef.current = L.heatLayer(heatmapData, {
-          radius: 25,
-          blur: 15,
-          maxZoom: 17,
-          gradient: {
-            0.0: 'blue',
-            0.2: 'cyan',
-            0.4: 'lime',
-            0.6: 'yellow',
-            0.8: 'orange',
-            1.0: 'red'
-          }
-        }).addTo(map);
-      }
-
-      // Add markers
-      if (showClusters) {
-        // Create marker cluster group
-        markersRef.current = L.markerClusterGroup({
-          iconCreateFunction: function(cluster) {
-            const count = cluster.getChildCount();
-            let c = ' marker-cluster-';
-            if (count < 10) {
-              c += 'small';
-            } else if (count < 100) {
-              c += 'medium';
-            } else {
-              c += 'large';
-            }
-            c += '';
-
-            return new L.DivIcon({
-              html: '<div><span>' + count + '</span></div>',
-              className: 'marker-cluster' + c,
-              iconSize: new L.Point(40, 40)
-            });
-          }
-        });
-
-        filteredBusinessCenters.forEach(bc => {
-          const marker = L.marker([bc.latitude, bc.longitude], {
-            icon: getIconForBusinessCenter(bc)
-          });
-
-          marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
-          markersRef.current.addLayer(marker);
-        });
-
-        map.addLayer(markersRef.current);
-      } else {
-        // Add individual markers
-        filteredBusinessCenters.forEach(bc => {
-          const marker = L.marker([bc.latitude, bc.longitude], {
-            icon: getIconForBusinessCenter(bc)
-          });
-
-          marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
-          marker.addTo(map);
-        });
-      }
-    }
-
-    return () => {
-      if (markersRef.current) {
-        map.removeLayer(markersRef.current);
-      }
-      if (heatmapRef.current) {
-        map.removeLayer(heatmapRef.current);
-      }
-      if (providersMarkersRef.current) {
-        map.removeLayer(providersMarkersRef.current);
-      }
-    };
-  }, [map, businessCenters, providers, showHeatmap, showClusters, filterType, onOrganizationClick, onBusinessCenterClick, onProviderClick, language, showProviders]);
-
-  // Handle polygon drawing
-  useEffect(() => {
-    if (!map) return;
-
-    const handleClick = (e) => {
-      if (!zoneSelectionMode) return;
-      setPolygonPoints(prevPoints => [...prevPoints, [e.latlng.lat, e.latlng.lng]]);
-    };
-
-    if (zoneSelectionMode) {
-      map.on('click', handleClick);
-      map.getContainer().style.cursor = 'crosshair';
-    } else {
-      map.off('click', handleClick);
-      map.getContainer().style.cursor = '';
-      if (currentPolygonRef.current) {
-        map.removeLayer(currentPolygonRef.current);
-      }
-    }
-
-    return () => {
-      map.off('click', handleClick);
-      map.getContainer().style.cursor = '';
-    };
-  }, [map, zoneSelectionMode, setPolygonPoints]);
-
+  // Effect for rendering the current polygon (remains unchanged)
   useEffect(() => {
     if (currentPolygonRef.current) {
       map.removeLayer(currentPolygonRef.current);
@@ -919,321 +784,4 @@ function BusinessCenterCard({ businessCenter, isOpen, onClose, onOrganizationCli
                 {t('ktClientsCard')}
               </h3>
               <div className="space-y-2">
-                {ktClients.map((company, index) => (
-                  <div 
-                    key={index}
-                    onClick={() => onOrganizationClick(company)}
-                    className="p-3 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors duration-200"
-                  >
-                    <div className="font-medium text-gray-800">{company.organization_name}</div>
-                    {company.accruals > 0 && (
-                      <div className="text-sm text-green-600">
-                        {company.accruals.toLocaleString()} {t('currency')}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {nonKtClients.length > 0 && (
-            <div>
-              <h3 className="text-lg font-semibold text-gray-700 mb-3">
-                {t('otherCompanies')}
-              </h3>
-              <div className="space-y-2">
-                {nonKtClients.map((company, index) => (
-                  <div 
-                    key={index}
-                    onClick={() => onOrganizationClick(company)}
-                    className="p-3 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors duration-200"
-                  >
-                    <div className="font-medium text-gray-800">{company.organization_name}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Helper function to render company popup content
-function renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language) {
-  const { t } = useTranslation(language);
-  const ktClients = bc.companies.filter(c => c.is_kt_client);
-  const nonKtClients = bc.companies.filter(c => !c.is_kt_client);
-  const totalRevenue = bc.companies.reduce((sum, c) => sum + (c.accruals || 0), 0);
-  const businessCenterName = bc.business_center_name || bc.name || 'Неизвестный БЦ';
-
-  return `
-    <div style="min-width: 250px; max-width: 300px; font-family: sans-serif;">
-      <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 12px;">
-        <h3 style="margin: 0; font-size: 16px; font-weight: bold; color: #1f2937; cursor: pointer;" 
-            onclick="window.handleBusinessCenterClick('${bc.id}')">
-          ${businessCenterName}
-        </h3>
-        <p style="margin: 4px 0 0 0; font-size: 12px; color: #6b7280;">${bc.address}</p>
-      </div>
-      
-      <div style="margin-bottom: 12px;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-          <span style="font-size: 12px; color: #6b7280;">${t('totalCompanies')}</span>
-          <span style="font-size: 12px; font-weight: 600;">${bc.companies.length}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-          <span style="font-size: 12px; color: #6b7280;">${t('ktClients')}</span>
-          <span style="font-size: 12px; font-weight: 600; color: #2563eb;">${ktClients.length}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-          <span style="font-size: 12px; color: #6b7280;">${t('totalRevenue')}</span>
-          <span style="font-size: 12px; font-weight: 600; color: #059669;">${totalRevenue.toLocaleString()} ${t('currency')}</span>
-        </div>
-      </div>
-
-      ${ktClients.length > 0 ? `
-        <div style="margin-bottom: 12px;">
-          <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #374151;">${t('ktClientsCard')}</h4>
-          <div style="max-height: 120px; overflow-y: auto;">
-            ${ktClients.map(company => `
-              <div style="padding: 4px 8px; margin-bottom: 2px; background-color: #f8fafc; border-radius: 4px; cursor: pointer; border: 1px solid #e2e8f0;"
-                   onclick="window.handleOrganizationClick('${company.bin}')">
-                <div style="font-size: 12px; font-weight: 500; color: #1f2937;">${company.organization_name}</div>
-                ${company.accruals > 0 ? `<div style="font-size: 10px; color: #059669;">${company.accruals.toLocaleString()} ${t('currency')}</div>` : ''}
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      ` : ''}
-
-      ${nonKtClients.length > 0 ? `
-        <div>
-          <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #374151;">${t('otherCompanies')}</h4>
-          <div style="max-height: 100px; overflow-y: auto;">
-            ${nonKtClients.map(company => `
-              <div style="padding: 4px 8px; margin-bottom: 2px; background-color: #f8fafc; border-radius: 4px; cursor: pointer; border: 1px solid #e2e8f0;"
-                   onclick="window.handleOrganizationClick('${company.bin}')">
-                <div style="font-size: 12px; font-weight: 500; color: #1f2937;">${company.organization_name}</div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      ` : ''}
-    </div>
-  `;
-}
-
-// Helper function to render provider popup content
-function renderProviderPopup(provider, onProviderClick, language) {
-  const { t } = useTranslation(language);
-
-  return `
-    <div style="min-width: 200px; max-width: 250px; font-family: sans-serif;">
-      <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 12px;">
-        <h3 style="margin: 0; font-size: 16px; font-weight: bold; color: #1f2937; cursor: pointer;" 
-            onclick="window.handleProviderClick('${provider.attr_provider_name}')">
-          ${provider.attr_provider_name_common}
-        </h3>
-        <p style="margin: 4px 0 0 0; font-size: 12px; color: #6b7280;">${provider.attr_provider_name}</p>
-      </div>
-      
-      <div style="margin-bottom: 12px;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-          <span style="font-size: 12px; color: #6b7280;">${t('downloadSpeed')}</span>
-          <span style="font-size: 12px; font-weight: 600; color: #059669;">${provider.val_download_mbps.toFixed(1)} ${t('mbps')}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-          <span style="font-size: 12px; color: #6b7280;">${t('uploadSpeed')}</span>
-          <span style="font-size: 12px; font-weight: 600; color: #2563eb;">${provider.val_upload_mbps.toFixed(1)} ${t('mbps')}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-          <span style="font-size: 12px; color: #6b7280;">${t('location')}</span>
-          <span style="font-size: 12px; font-weight: 600;">${provider.attr_place_name}</span>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-// Main App component
-function App() {
-  const [businessCenters, setBusinessCenters] = useState([]);
-  const [providers, setProviders] = useState([]);
-  const [showHeatmap, setShowHeatmap] = useState(false);
-  const [showClusters, setShowClusters] = useState(true);
-  const [zoneSelectionMode, setZoneSelectionMode] = useState(false);
-  const [selectedZone, setSelectedZone] = useState(null);
-  const [filterType, setFilterType] = useState('all');
-  const [selectedOrganization, setSelectedOrganization] = useState(null);
-  const [selectedBusinessCenter, setSelectedBusinessCenter] = useState(null);
-  const [selectedProvider, setSelectedProvider] = useState(null);
-  const [language, setLanguage] = useState('ru');
-  const [polygonPoints, setPolygonPoints] = useState([]);
-  const [showProviders, setShowProviders] = useState(false);
-
-  useEffect(() => {
-    setBusinessCenters(data);
-    setProviders(providersData);
-  }, []);
-
-  useEffect(() => {
-    // Global handlers for popup clicks
-    window.handleOrganizationClick = (bin) => {
-      const organization = businessCenters
-        .flatMap(bc => bc.companies)
-        .find(company => company.bin === bin);
-      if (organization) {
-        setSelectedOrganization(organization);
-      }
-    };
-
-    window.handleBusinessCenterClick = (bcId) => {
-      const businessCenter = businessCenters.find(bc => bc.id === bcId);
-      if (businessCenter) {
-        setSelectedBusinessCenter(businessCenter);
-      }
-    };
-
-    window.handleProviderClick = (providerName) => {
-      const provider = providers.find(p => p.attr_provider_name === providerName);
-      if (provider) {
-        setSelectedProvider(provider);
-      }
-    };
-
-    return () => {
-      delete window.handleOrganizationClick;
-      delete window.handleBusinessCenterClick;
-      delete window.handleProviderClick;
-    };
-  }, [businessCenters, providers]);
-
-  const clearZone = () => {
-    setSelectedZone(null);
-    setZoneSelectionMode(false);
-    setPolygonPoints([]);
-  };
-
-  const finishPolygon = () => {
-    if (polygonPoints.length > 2) {
-      setSelectedZone({
-        type: 'polygon',
-        points: polygonPoints
-      });
-      setZoneSelectionMode(false);
-    } else {
-      alert('Пожалуйста, добавьте как минимум 3 точки для создания полигона.');
-    }
-  };
-
-  const handleOrganizationClick = (organization) => {
-    setSelectedOrganization(organization);
-  };
-
-  const handleBusinessCenterClick = (businessCenter) => {
-    setSelectedBusinessCenter(businessCenter);
-  };
-
-  const handleProviderClick = (provider) => {
-    setSelectedProvider(provider);
-  };
-
-  return (
-    <Router>
-      <div className="App">
-        <Navigation language={language} setLanguage={setLanguage} />
-        
-        <Routes>
-          <Route path="/" element={
-            <div className="map-container">
-              <MapControls 
-                showHeatmap={showHeatmap}
-                setShowHeatmap={setShowHeatmap}
-                showClusters={showClusters}
-                setShowClusters={setShowClusters}
-                zoneSelectionMode={zoneSelectionMode}
-                setZoneSelectionMode={setZoneSelectionMode}
-                selectedZone={selectedZone}
-                clearZone={clearZone}
-                filterType={filterType}
-                setFilterType={setFilterType}
-                language={language}
-                polygonPoints={polygonPoints}
-                finishPolygon={finishPolygon}
-                showProviders={showProviders}
-                setShowProviders={setShowProviders}
-              />
-              
-              <MapLegend language={language} showProviders={showProviders} />
-              
-              <ZoneStatsPanel 
-                selectedZone={selectedZone}
-                businessCenters={businessCenters}
-                language={language}
-              />
-              
-              <MapContainer 
-                center={[51.1694, 71.4491]} 
-                zoom={12} 
-                style={{ height: 'calc(100vh - 120px)', width: '100%' }}
-              >
-                <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                
-                <MapInteractions 
-                  businessCenters={businessCenters}
-                  providers={providers}
-                  showHeatmap={showHeatmap}
-                  showClusters={showClusters}
-                  zoneSelectionMode={zoneSelectionMode}
-                  selectedZone={selectedZone}
-                  setSelectedZone={setSelectedZone}
-                  filterType={filterType}
-                  onOrganizationClick={handleOrganizationClick}
-                  onBusinessCenterClick={handleBusinessCenterClick}
-                  onProviderClick={handleProviderClick}
-                  language={language}
-                  polygonPoints={polygonPoints}
-                  setPolygonPoints={setPolygonPoints}
-                  finishPolygon={finishPolygon}
-                  showProviders={showProviders}
-                />
-              </MapContainer>
-              
-              <OrganizationCard 
-                organization={selectedOrganization}
-                isOpen={!!selectedOrganization}
-                onClose={() => setSelectedOrganization(null)}
-                language={language}
-              />
-              
-              <BusinessCenterCard 
-                businessCenter={selectedBusinessCenter}
-                isOpen={!!selectedBusinessCenter}
-                onClose={() => setSelectedBusinessCenter(null)}
-                onOrganizationClick={handleOrganizationClick}
-                language={language}
-              />
-
-              <ProviderCard 
-                provider={selectedProvider}
-                isOpen={!!selectedProvider}
-                onClose={() => setSelectedProvider(null)}
-                language={language}
-              />
-            </div>
-          } />
-          <Route path="/analytics" element={<AnalyticsPage businessCenters={businessCenters} language={language} />} />
-        </Routes>
-      </div>
-    </Router>
-  );
-}
-
-export default App;
-
+                {ktClients.map((company
