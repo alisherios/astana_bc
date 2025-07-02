@@ -18,6 +18,20 @@ export const translations = {
     selectZone: "Выделить зону",
     cancelSelection: "Отменить выделение",
     clearZone: "Очистить зону",
+    finishSelection: "Завершить выделение",
+    
+    // Providers
+    showProviders: "Показать провайдеров",
+    hideProviders: "Скрыть провайдеров",
+    highSpeedProviders: "Высокая скорость (≥100 Мбит/с)",
+    mediumSpeedProviders: "Средняя скорость (50-99 Мбит/с)",
+    lowSpeedProviders: "Низкая скорость (<50 Мбит/с)",
+    providerName: "Провайдер:",
+    location: "Местоположение:",
+    downloadSpeed: "Скорость загрузки:",
+    uploadSpeed: "Скорость отдачи:",
+    mbps: "Мбит/с",
+    coordinates: "Координаты:",
     
     // Zone Statistics
     zoneStats: "Статистика по зоне",
@@ -94,6 +108,20 @@ export const translations = {
     selectZone: "Аймақты бөлу",
     cancelSelection: "Таңдауды болдырмау",
     clearZone: "Аймақты тазалау",
+    finishSelection: "Таңдауды аяқтау",
+    
+    // Providers
+    showProviders: "Провайдерлерді көрсету",
+    hideProviders: "Провайдерлерді жасыру",
+    highSpeedProviders: "Жоғары жылдамдық (≥100 Мбит/с)",
+    mediumSpeedProviders: "Орташа жылдамдық (50-99 Мбит/с)",
+    lowSpeedProviders: "Төмен жылдамдық (<50 Мбит/с)",
+    providerName: "Провайдер:",
+    location: "Орналасқан жері:",
+    downloadSpeed: "Жүктеу жылдамдығы:",
+    uploadSpeed: "Жіберу жылдамдығы:",
+    mbps: "Мбит/с",
+    coordinates: "Координаттар:",
     
     // Zone Statistics
     zoneStats: "Аймақ бойынша статистика",
