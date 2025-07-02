@@ -417,87 +417,161 @@ function MapInteractions({
   polygonPoints,
   setPolygonPoints,
   finishPolygon,
-  showProviders
+  showProviders // <--- Этот проп уже есть, отлично
 }) {
   const map = useMap();
   const markersRef = useRef(null);
   const heatmapRef = useRef(null);
   const currentPolygonRef = useRef(null);
-  const providersMarkersRef = useRef(null);
+  const providersMarkersRef = useRef(null); // <-- Реф для слоя провайдеров
 
+  // Эффект для отображения бизнес-центров
   useEffect(() => {
     if (!map) return;
 
-    // Clear existing layers
+    // Очищаем старые слои БЦ
     if (markersRef.current) {
       map.removeLayer(markersRef.current);
+      markersRef.current = null;
     }
     if (heatmapRef.current) {
       map.removeLayer(heatmapRef.current);
-    }
-    if (currentPolygonRef.current) {
-      map.removeLayer(currentPolygonRef.current);
-    }
-    if (providersMarkersRef.current) {
-      map.removeLayer(providersMarkersRef.current);
+      heatmapRef.current = null;
     }
 
-    if (showProviders) {
-      // Show providers layer
-      providersMarkersRef.current = L.markerClusterGroup({
-        iconCreateFunction: function(cluster) {
-          const count = cluster.getChildCount();
-          let c = ' marker-cluster-';
-          if (count < 10) {
-            c += 'small';
-          } else if (count < 100) {
-            c += 'medium';
-          } else {
-            c += 'large';
-          }
-          c += '';
+    // Фильтруем БЦ как и раньше
+    let filteredBusinessCenters = businessCenters;
+    if (filterType === 'kt') {
+      filteredBusinessCenters = businessCenters.filter(bc =>
+        bc.companies.some(company => company.is_kt_client)
+      );
+    } else if (filterType === 'non-kt') {
+      filteredBusinessCenters = businessCenters.filter(bc =>
+        !bc.companies.some(company => company.is_kt_client)
+      );
+    }
 
-          return new L.DivIcon({
-            html: '<div><span>' + count + '</span></div>',
-            className: 'marker-cluster' + c,
-            iconSize: new L.Point(40, 40)
-          });
-        }
+    // Тепловая карта (если включена)
+    if (showHeatmap) {
+      const heatmapData = filteredBusinessCenters.map(bc => {
+        const ktClientsCount = bc.companies.filter(c => c.is_kt_client).length;
+        const totalRevenue = bc.companies.reduce((sum, c) => sum + (c.accruals || 0), 0);
+        const intensity = Math.max(ktClientsCount * 0.1, totalRevenue / 1000000);
+        return [bc.latitude, bc.longitude, intensity];
       });
+      heatmapRef.current = L.heatLayer(heatmapData, {
+        radius: 25,
+        blur: 15,
+        maxZoom: 17,
+        gradient: { 0.0: 'blue', 0.2: 'cyan', 0.4: 'lime', 0.6: 'yellow', 0.8: 'orange', 1.0: 'red' }
+      }).addTo(map);
+    }
 
+    // Маркеры БЦ (кластеризованные или обычные)
+    if (showClusters) {
+      markersRef.current = L.markerClusterGroup();
+      filteredBusinessCenters.forEach(bc => {
+        const marker = L.marker([bc.latitude, bc.longitude], { icon: getIconForBusinessCenter(bc) });
+        marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
+        markersRef.current.addLayer(marker);
+      });
+      map.addLayer(markersRef.current);
+    } else {
+      // Если не кластеризация, создаем группу для простоты управления
+      markersRef.current = L.layerGroup();
+      filteredBusinessCenters.forEach(bc => {
+        const marker = L.marker([bc.latitude, bc.longitude], { icon: getIconForBusinessCenter(bc) });
+        marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
+        markersRef.current.addLayer(marker);
+      });
+      map.addLayer(markersRef.current);
+    }
+
+    return () => {
+      if (markersRef.current) {
+        map.removeLayer(markersRef.current);
+      }
+      if (heatmapRef.current) {
+        map.removeLayer(heatmapRef.current);
+      }
+    };
+  }, [map, businessCenters, showHeatmap, showClusters, filterType, onOrganizationClick, onBusinessCenterClick, language]);
+
+
+  // Отдельный эффект для отображения провайдеров
+  useEffect(() => {
+    if (!map) return;
+
+    // Если нужно показать провайдеров и слоя еще нет
+    if (showProviders && !providersMarkersRef.current) {
+      providersMarkersRef.current = L.markerClusterGroup(); // Используем кластеризацию для провайдеров
       providers.forEach(provider => {
         const marker = L.marker([provider.attr_location_latitude, provider.attr_location_longitude], {
           icon: getIconForProvider(provider)
         });
-
         marker.bindPopup(renderProviderPopup(provider, onProviderClick, language));
         providersMarkersRef.current.addLayer(marker);
       });
-
       map.addLayer(providersMarkersRef.current);
-    } else {
-      // Show business centers layer
-      // Filter business centers based on filterType
-      let filteredBusinessCenters = businessCenters;
-      if (filterType === 'kt') {
-        filteredBusinessCenters = businessCenters.filter(bc =>
-          bc.companies.some(company => company.is_kt_client)
-        );
-      } else if (filterType === 'non-kt') {
-        filteredBusinessCenters = businessCenters.filter(bc =>
-          !bc.companies.some(company => company.is_kt_client)
-        );
+    }
+    // Если нужно скрыть провайдеров и слой существует
+    else if (!showProviders && providersMarkersRef.current) {
+      map.removeLayer(providersMarkersRef.current);
+      providersMarkersRef.current = null;
+    }
+
+    // Функция очистки при размонтировании компонента
+    return () => {
+      if (providersMarkersRef.current) {
+        map.removeLayer(providersMarkersRef.current);
+        providersMarkersRef.current = null;
       }
+    };
+  }, [map, providers, showProviders, onProviderClick, language]);
 
-      // Prepare heatmap data
-      const heatmapData = [];
-      filteredBusinessCenters.forEach(bc => {
-        const ktClientsCount = bc.companies.filter(c => c.is_kt_client).length;
-        const totalRevenue = bc.companies.reduce((sum, c) => sum + (c.accruals || 0), 0);
-        const intensity = Math.max(ktClientsCount * 0.1, totalRevenue / 1000000);
-        heatmapData.push([bc.latitude, bc.longitude, intensity]);
-      });
 
+  // Эффект для рисования полигона (остается без изменений)
+  useEffect(() => {
+    if (!map) return;
+
+    const handleClick = (e) => {
+      if (!zoneSelectionMode) return;
+      setPolygonPoints(prevPoints => [...prevPoints, [e.latlng.lat, e.latlng.lng]]);
+    };
+
+    if (zoneSelectionMode) {
+      map.on('click', handleClick);
+      map.getContainer().style.cursor = 'crosshair';
+    } else {
+      map.off('click', handleClick);
+      map.getContainer().style.cursor = '';
+      if (currentPolygonRef.current) {
+        map.removeLayer(currentPolygonRef.current);
+      }
+    }
+
+    return () => {
+      map.off('click', handleClick);
+      map.getContainer().style.cursor = '';
+    };
+  }, [map, zoneSelectionMode, setPolygonPoints]);
+
+  // Эффект для отрисовки текущего полигона (остается без изменений)
+  useEffect(() => {
+    if (currentPolygonRef.current) {
+      map.removeLayer(currentPolygonRef.current);
+    }
+    if (polygonPoints.length > 1) {
+      currentPolygonRef.current = L.polygon(polygonPoints, { color: '#3b82f6', weight: 2, fillOpacity: 0.1 }).addTo(map);
+    }
+  }, [map, polygonPoints]);
+
+  return (
+    selectedZone && selectedZone.type === 'polygon' && (
+      <Polygon positions={selectedZone.points} color="#3b82f6" weight={2} fillOpacity={0.1} />
+    )
+  );
+}
       // Add heatmap layer
       if (showHeatmap) {
         heatmapRef.current = L.heatLayer(heatmapData, {
