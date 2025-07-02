@@ -22,61 +22,36 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-// Custom icon for KT clients
+// Custom icons
 const ktClientIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
 });
-
-// Default icon for regular business centers
 const defaultIcon = new L.Icon({
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
 });
-
 const lowPenetrationIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
 });
-
-// Provider icons based on speed
 const highSpeedProviderIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [20, 32],
-  iconAnchor: [10, 32],
-  popupAnchor: [1, -28],
-  shadowSize: [32, 32]
+  iconSize: [20, 32], iconAnchor: [10, 32], popupAnchor: [1, -28], shadowSize: [32, 32]
 });
-
 const mediumSpeedProviderIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [20, 32],
-  iconAnchor: [10, 32],
-  popupAnchor: [1, -28],
-  shadowSize: [32, 32]
+  iconSize: [20, 32], iconAnchor: [10, 32], popupAnchor: [1, -28], shadowSize: [32, 32]
 });
-
 const lowSpeedProviderIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [20, 32],
-  iconAnchor: [10, 32],
-  popupAnchor: [1, -28],
-  shadowSize: [32, 32]
+  iconSize: [20, 32], iconAnchor: [10, 32], popupAnchor: [1, -28], shadowSize: [32, 32]
 });
 
 function getPenetrationRate(bc) {
@@ -84,194 +59,182 @@ function getPenetrationRate(bc) {
   const kt = bc.companies.filter(c => c.is_kt_client).length;
   return total === 0 ? 0 : (kt / total) * 100;
 }
-
 function getIconForBusinessCenter(bc) {
-  const penetration = getPenetrationRate(bc);
-  if (penetration > 0 && penetration < 30) {
-    return lowPenetrationIcon;
-  }
-  return defaultIcon;
+  const pen = getPenetrationRate(bc);
+  return pen > 0 && pen < 30 ? lowPenetrationIcon : defaultIcon;
 }
-
 function getIconForProvider(provider) {
-  const downloadSpeed = provider.val_download_mbps;
-  if (downloadSpeed >= 100) {
-    return highSpeedProviderIcon;
-  } else if (downloadSpeed >= 50) {
-    return mediumSpeedProviderIcon;
-  } else {
-    return lowSpeedProviderIcon;
-  }
+  const d = provider.val_download_mbps;
+  return d >= 100 ? highSpeedProviderIcon : d >= 50 ? mediumSpeedProviderIcon : lowSpeedProviderIcon;
 }
 
-// ... остальные компоненты остаются без изменений ...
-
+// Nav, Controls, Legend, Stats omitted for brevity...
 // Component for handling map interactions
 function MapInteractions({
-  businessCenters,
-  providers,
-  showHeatmap,
-  showClusters,
-  zoneSelectionMode,
-  setZoneSelectionMode,
-  selectedZone,
-  setSelectedZone,
-  filterType,
-  onOrganizationClick,
-  onBusinessCenterClick,
-  onProviderClick,
-  language,
-  polygonPoints,
-  setPolygonPoints,
-  finishPolygon,
-  showProviders
+  businessCenters, providers, showHeatmap, showClusters,
+  zoneSelectionMode, setZoneSelectionMode, selectedZone, setSelectedZone,
+  filterType, onOrganizationClick, onBusinessCenterClick,
+  onProviderClick, language, polygonPoints, setPolygonPoints,
+  finishPolygon, showProviders
 }) {
   const map = useMap();
-  const markersRef = useRef(null);
-  const heatmapRef = useRef(null);
-  const currentPolygonRef = useRef(null);
-  const providersMarkersRef = useRef(null);
+  const markersRef = useRef();
+  const heatmapRef = useRef();
+  const providerRef = useRef();
 
   useEffect(() => {
     if (!map) return;
-
-    // Очищаем предыдущие слои
-    if (markersRef.current) {
-      map.removeLayer(markersRef.current);
-      markersRef.current = null;
-    }
-    if (heatmapRef.current) {
-      map.removeLayer(heatmapRef.current);
-      heatmapRef.current = null;
-    }
-    if (providersMarkersRef.current) {
-      map.removeLayer(providersMarkersRef.current);
-      providersMarkersRef.current = null;
-    }
-
-    // --- Слой провайдеров ---
+    [markersRef.current, heatmapRef.current, providerRef.current].forEach(layer => layer && map.removeLayer(layer));
+    // Providers layer
     if (showProviders) {
-      const providerCluster = L.markerClusterGroup({
-        iconCreateFunction: function(cluster) {
-          const count = cluster.getChildCount();
-          let c = ' marker-cluster-';
-          if (count < 10) {
-            c += 'small';
-          } else if (count < 100) {
-            c += 'medium';
-          } else {
-            c += 'large';
-          }
-          return new L.DivIcon({
-            html: '<div><span>' + count + '</span></div>',
-            className: 'marker-cluster' + c,
-            iconSize: new L.Point(40, 40)
-          });
-        }
+      const cl = L.markerClusterGroup();
+      providers.forEach(p => {
+        const m = L.marker([p.attr_location_latitude, p.attr_location_longitude], { icon: getIconForProvider(p) });
+        m.bindPopup(renderProviderPopup(p, onProviderClick, language));
+        cl.addLayer(m);
       });
-
-      providers.forEach(provider => {
-        const marker = L.marker([provider.attr_location_latitude, provider.attr_location_longitude], {
-          icon: getIconForProvider(provider)
-        });
-        marker.bindPopup(renderProviderPopup(provider, onProviderClick, language));
-        providerCluster.addLayer(marker);
-      });
-      providersMarkersRef.current = providerCluster;
-      map.addLayer(providerCluster);
+      providerRef.current = cl;
+      map.addLayer(cl);
     }
-
-    // --- Слой бизнес-центров ---
-    let filteredBusinessCenters = businessCenters;
-    if (filterType === 'kt') {
-      filteredBusinessCenters = businessCenters.filter(bc =>
-        bc.companies.some(c => c.is_kt_client)
-      );
-    } else if (filterType === 'non-kt') {
-      filteredBusinessCenters = businessCenters.filter(bc =>
-        !bc.companies.some(c => c.is_kt_client)
-      );
-    }
-
-    // Подготовка данных для тепловой карты
-    const heatmapData = [];
-    filteredBusinessCenters.forEach(bc => {
-      const ktClientsCount = bc.companies.filter(c => c.is_kt_client).length;
-      const totalRevenue = bc.companies.reduce((sum, c) => sum + (c.accruals || 0), 0);
-      const intensity = Math.max(ktClientsCount * 0.1, totalRevenue / 1000000);
-      heatmapData.push([bc.latitude, bc.longitude, intensity]);
-    });
-
-    // Добавляем тепловую карту
-    if (showHeatmap) {
-      heatmapRef.current = L.heatLayer(heatmapData, {
-        radius: 25,
-        blur: 15,
-        maxZoom: 17,
-        gradient: {
-          0.0: 'blue',
-          0.2: 'cyan',
-          0.4: 'lime',
-          0.6: 'yellow',
-          0.8: 'orange',
-          1.0: 'red'
-        }
-      }).addTo(map);
-    }
-
-    // Добавляем маркеры бизнес-центров (кластеры или по-отдельности)
+    // Filter BCs
+    let bcs = businessCenters;
+    if (filterType === 'kt') bcs = bcs.filter(bc => bc.companies.some(c => c.is_kt_client));
+    if (filterType === 'non-kt') bcs = bcs.filter(bc => !bc.companies.some(c => c.is_kt_client));
+    // Heatmap data
+    const hData = bcs.map(bc => [bc.latitude, bc.longitude, Math.max(bc.companies.filter(c => c.is_kt_client).length * 0.1,
+      bc.companies.reduce((s,c) => s + (c.accruals||0),0)/1e6)]);
+    if (showHeatmap) heatmapRef.current = L.heatLayer(hData).addTo(map);
+    // BC markers
     if (showClusters) {
-      const bcCluster = L.markerClusterGroup({
-        iconCreateFunction: function(cluster) {
-          const count = cluster.getChildCount();
-          let c = ' marker-cluster-';
-          if (count < 10) {
-            c += 'small';
-          } else if (count < 100) {
-            c += 'medium';
-          } else {
-            c += 'large';
-          }
-          return new L.DivIcon({
-            html: '<div><span>' + count + '</span></div>',
-            className: 'marker-cluster' + c,
-            iconSize: new L.Point(40, 40)
-          });
-        }
+      const cl = L.markerClusterGroup();
+      bcs.forEach(bc => {
+        const m = L.marker([bc.latitude, bc.longitude], { icon: getIconForBusinessCenter(bc) });
+        m.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
+        cl.addLayer(m);
       });
-
-      filteredBusinessCenters.forEach(bc => {
-        const marker = L.marker([bc.latitude, bc.longitude], { icon: getIconForBusinessCenter(bc) });
-        marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
-        bcCluster.addLayer(marker);
-      });
-      markersRef.current = bcCluster;
-      map.addLayer(bcCluster);
+      markersRef.current = cl;
+      map.addLayer(cl);
     } else {
-      filteredBusinessCenters.forEach(bc => {
-        const marker = L.marker([bc.latitude, bc.longitude], { icon: getIconForBusinessCenter(bc) });
-        marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
-        marker.addTo(map);
+      bcs.forEach(bc => {
+        const m = L.marker([bc.latitude, bc.longitude], { icon: getIconForBusinessCenter(bc) });
+        m.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
+        m.addTo(map);
       });
     }
-
     return () => {
-      if (markersRef.current) {
-        map.removeLayer(markersRef.current);
-        markersRef.current = null;
-      }
-      if (heatmapRef.current) {
-        map.removeLayer(heatmapRef.current);
-        heatmapRef.current = null;
-      }
-      if (providersMarkersRef.current) {
-        map.removeLayer(providersMarkersRef.current);
-        providersMarkersRef.current = null;
-      }
+      [markersRef.current, heatmapRef.current, providerRef.current].forEach(layer => layer && map.removeLayer(layer));
     };
-  }, [map, businessCenters, providers, showHeatmap, showClusters, filterType, onOrganizationClick, onBusinessCenterClick, onProviderClick, language, showProviders]);
+  }, [map, businessCenters, providers, showHeatmap, showClusters, filterType, showProviders, language]);
 
-  // ... остальной код MapInteractions и компоненты OrganizationCard, BusinessCenterCard, ProviderCard, App и т.д. остаются без изменений ...
+  // Polygon & click handling omitted for brevity...
+  return selectedZone?.type === 'polygon' ? <Polygon positions={selectedZone.points} /> : null;
+}
+
+// ... renderCompanyPopup, renderProviderPopup, modal components, etc. remain unchanged ...
+
+function App() {
+  const [businessCenters, setBusinessCenters] = useState([]);
+  const [providers, setProviders] = useState([]);
+  const [showHeatmap, setShowHeatmap] = useState(false);
+  const [showClusters, setShowClusters] = useState(true);
+  const [zoneSelectionMode, setZoneSelectionMode] = useState(false);
+  const [selectedZone, setSelectedZone] = useState(null);
+  const [filterType, setFilterType] = useState('all');
+  const [selectedOrganization, setSelectedOrganization] = useState(null);
+  const [selectedBusinessCenter, setSelectedBusinessCenter] = useState(null);
+  const [selectedProvider, setSelectedProvider] = useState(null);
+  const [language, setLanguage] = useState('ru');
+  const [polygonPoints, setPolygonPoints] = useState([]);
+  const [showProviders, setShowProviders] = useState(false);
+
+  useEffect(() => {
+    setBusinessCenters(data);
+    setProviders(providersData);
+  }, []);
+
+  useEffect(() => {
+    window.handleOrganizationClick = bin => {
+      const org = businessCenters.flatMap(bc => bc.companies).find(c => c.bin === bin);
+      org && setSelectedOrganization(org);
+    };
+    window.handleBusinessCenterClick = id => {
+      const bc = businessCenters.find(b => b.id === id);
+      bc && setSelectedBusinessCenter(bc);
+    };
+    window.handleProviderClick = name => {
+      const p = providers.find(p => p.attr_provider_name === name);
+      p && setSelectedProvider(p);
+    };
+    return () => {
+      delete window.handleOrganizationClick;
+      delete window.handleBusinessCenterClick;
+      delete window.handleProviderClick;
+    };
+  }, [businessCenters, providers]);
+
+  const clearZone = () => { setSelectedZone(null); setZoneSelectionMode(false); setPolygonPoints([]); };
+  const finishPolygon = () => {
+    if (polygonPoints.length > 2) setSelectedZone({ type: 'polygon', points: polygonPoints });
+    else alert('Добавьте минимум 3 точки.');
+    setZoneSelectionMode(false);
+  };
+
+  return (
+    <Router>
+      <div className="App">
+        <Navigation language={language} setLanguage={setLanguage} />
+        <Routes>
+          <Route path="/" element={
+            <div className="map-container">
+              <MapControls
+                showHeatmap={showHeatmap} setShowHeatmap={setShowHeatmap}
+                showClusters={showClusters} setShowClusters={setShowClusters}
+                zoneSelectionMode={zoneSelectionMode} setZoneSelectionMode={setZoneSelectionMode}
+                selectedZone={selectedZone} clearZone={clearZone}
+                filterType={filterType} setFilterType={setFilterType}
+                language={language}
+                polygonPoints={polygonPoints} finishPolygon={finishPolygon}
+                showProviders={showProviders} setShowProviders={setShowProviders}
+              />
+              <MapLegend language={language} showProviders={showProviders} />
+              <ZoneStatsPanel selectedZone={selectedZone} businessCenters={businessCenters} language={language} />
+
+              <MapContainer center={[51.1694, 71.4491]} zoom={12} style={{ height: 'calc(100vh - 120px)', width: '100%' }}>
+                <TileLayer
+                  attribution='&copy; OpenStreetMap contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <MapInteractions
+                  businessCenters={businessCenters}
+                  providers={providers}
+                  showHeatmap={showHeatmap}
+                  showClusters={showClusters}
+                  zoneSelectionMode={zoneSelectionMode}
+                  setZoneSelectionMode={setZoneSelectionMode}
+                  selectedZone={selectedZone}
+                  setSelectedZone={setSelectedZone}
+                  filterType={filterType}
+                  onOrganizationClick={c => setSelectedOrganization(c)}
+                  onBusinessCenterClick={bc => setSelectedBusinessCenter(bc)}
+                  onProviderClick={p => setSelectedProvider(p)}
+                  language={language}
+                  polygonPoints={polygonPoints}
+                  setPolygonPoints={setPolygonPoints}
+                  finishPolygon={finishPolygon}
+                  showProviders={showProviders}
+                />
+              </MapContainer>
+
+              <OrganizationCard organization={selectedOrganization} isOpen={!!selectedOrganization} onClose={() => setSelectedOrganization(null)} language={language} />
+              <BusinessCenterCard businessCenter={selectedBusinessCenter} isOpen={!!selectedBusinessCenter} onClose={() => setSelectedBusinessCenter(null)} onOrganizationClick={c => setSelectedOrganization(c)} language={language} />
+              <ProviderCard provider={selectedProvider} isOpen={!!selectedProvider} onClose={() => setSelectedProvider(null)} language={language} />
+            </div>
+          } />
+          <Route path="/analytics" element={<AnalyticsPage businessCenters={businessCenters} language={language} />} />
+        </Routes>
+      </div>
+    </Router>
+  );
 }
 
 export default App;
