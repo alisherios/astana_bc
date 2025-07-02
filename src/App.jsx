@@ -444,7 +444,7 @@ function MapInteractions({
     }
 
     // --- Provider Layer Logic ---
-    if (showProviders) {
+    if (showProviders && providers && providers.length > 0) {
       providersMarkersRef.current = L.markerClusterGroup({
         iconCreateFunction: function(cluster) {
           const count = cluster.getChildCount();
@@ -501,7 +501,8 @@ function MapInteractions({
     }
 
     // Marker Layer (Clustered or Individual)
-    if (showClusters) {
+    if (filteredBusinessCenters && filteredBusinessCenters.length > 0) {
+      if (showClusters) {
       markersRef.current = L.markerClusterGroup({
         iconCreateFunction: function(cluster) {
           const count = cluster.getChildCount();
@@ -523,10 +524,10 @@ function MapInteractions({
         });
         marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
         markersRef.current.addLayer(marker);
-      });
-    } else {
-      markersRef.current = L.layerGroup(); // Use a layer group for individual markers
-      filteredBusinessCenters.forEach(bc => {
+          } else {
+        if (filteredBusinessCenters && filteredBusinessCenters.length > 0) {
+          markersRef.current = L.layerGroup(); // Use a layer group for individual markers
+          filteredBusinessCenters.forEach(bc => {
         const marker = L.marker([bc.latitude, bc.longitude], {
           icon: getIconForBusinessCenter(bc)
         });
