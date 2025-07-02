@@ -7,7 +7,7 @@ import 'leaflet.heat';
 import { Button } from './components/ui/button';
 import { Badge } from './components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
-import { Map, BarChart3, Square, Layers, TrendingUp, Building, Users, Languages, Info, Check, Wifi } from 'lucide-react';
+import { Map, BarChart3, Square, Layers, TrendingUp, Building, Users, Languages, Info, Check, Wifi, Zap } from 'lucide-react';
 import AnalyticsPage from './components/AnalyticsPage';
 import { useTranslation } from './translations';
 import './App.css';
@@ -20,20 +20,28 @@ L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-} );
+});
 
-// --- НОВЫЕ ИКОНКИ ---
-// Иконка для Бизнес-Центров (БЦ)
-const buildingIcon = new L.Icon({
-  iconUrl: 'https://img.icons8.com/office/40/company.png', // Пример иконки здания
+// Custom icon for KT clients
+const ktClientIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32],
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
   shadowSize: [41, 41]
-} );
+});
 
-// Иконка для БЦ с низкой пенетрацией
+// Default icon for regular business centers
+const defaultIcon = new L.Icon({
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
 const lowPenetrationIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
@@ -41,7 +49,7 @@ const lowPenetrationIcon = new L.Icon({
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
   shadowSize: [41, 41]
-} );
+});
 
 // Provider icons based on speed
 const highSpeedProviderIcon = new L.Icon({
@@ -51,7 +59,7 @@ const highSpeedProviderIcon = new L.Icon({
   iconAnchor: [10, 32],
   popupAnchor: [1, -28],
   shadowSize: [32, 32]
-} );
+});
 
 const mediumSpeedProviderIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
@@ -60,7 +68,7 @@ const mediumSpeedProviderIcon = new L.Icon({
   iconAnchor: [10, 32],
   popupAnchor: [1, -28],
   shadowSize: [32, 32]
-} );
+});
 
 const lowSpeedProviderIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
@@ -69,7 +77,7 @@ const lowSpeedProviderIcon = new L.Icon({
   iconAnchor: [10, 32],
   popupAnchor: [1, -28],
   shadowSize: [32, 32]
-} );
+});
 
 function getPenetrationRate(bc) {
   const total = bc.companies.length;
@@ -82,7 +90,7 @@ function getIconForBusinessCenter(bc) {
   if (penetration > 0 && penetration < 30) {
     return lowPenetrationIcon;
   }
-  return buildingIcon; // Используем новую иконку для БЦ
+  return defaultIcon;
 }
 
 function getIconForProvider(provider) {
@@ -104,6 +112,7 @@ function Navigation({ language, setLanguage }) {
     <div className="bg-white shadow-sm border-b p-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-4">
+          {/* Логотип Казахтелеком */}
           <img 
             src="/kazakhtelecom_logo.png" 
             alt="Казахтелеком" 
@@ -139,6 +148,7 @@ function Navigation({ language, setLanguage }) {
             </Button>
           </Link>
           
+          {/* Language Toggle Button */}
           <Button
             onClick={() => setLanguage(language === 'ru' ? 'kk' : 'ru')}
             variant="outline"
@@ -153,6 +163,7 @@ function Navigation({ language, setLanguage }) {
   );
 }
 
+// Component for map legend
 function MapLegend({ language, showProviders }) {
   const { t } = useTranslation(language);
   
@@ -165,27 +176,29 @@ function MapLegend({ language, showProviders }) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
-        <div className="flex items-center gap-2">
-          <img src={buildingIcon.options.iconUrl} alt="BC" className="w-4 h-4" />
-          <span className="text-xs text-gray-600">{t('regularMarkers')}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <img src={lowPenetrationIcon.options.iconUrl} alt="Low Penetration" className="w-4 h-5" />
-          <span className="text-xs text-gray-600">{t('lowPenetrationMarkers')}</span>
-        </div>
-
-        {showProviders && (
+        {!showProviders ? (
           <>
-            <div className="flex items-center gap-2 mt-2 pt-2 border-t">
-              <img src={highSpeedProviderIcon.options.iconUrl} alt="High Speed" className="w-3 h-4" />
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-gray-500 rounded-full"></div>
+              <span className="text-xs text-gray-600">{t('regularMarkers')}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-yellow-500 rounded-full"></div>
+              <span className="text-xs text-gray-600">{t('lowPenetrationMarkers')}</span>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
               <span className="text-xs text-gray-600">{t('highSpeedProviders')}</span>
             </div>
             <div className="flex items-center gap-2">
-              <img src={mediumSpeedProviderIcon.options.iconUrl} alt="Medium Speed" className="w-3 h-4" />
+              <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
               <span className="text-xs text-gray-600">{t('mediumSpeedProviders')}</span>
             </div>
             <div className="flex items-center gap-2">
-              <img src={lowSpeedProviderIcon.options.iconUrl} alt="Low Speed" className="w-3 h-4" />
+              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
               <span className="text-xs text-gray-600">{t('lowSpeedProviders')}</span>
             </div>
           </>
@@ -195,6 +208,7 @@ function MapLegend({ language, showProviders }) {
   );
 }
 
+// Component for map controls and zone selection
 function MapControls({
   showHeatmap,
   setShowHeatmap,
@@ -307,20 +321,27 @@ function MapControls({
   );
 }
 
+// Component for zone statistics panel
 function ZoneStatsPanel({ selectedZone, businessCenters, language }) {
   const { t } = useTranslation(language);
   
   if (!selectedZone) return null;
 
   const isPointInPolygon = (point, vs) => {
+    // ray-casting algorithm based on
+    // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+
     var x = point[0], y = point[1];
+
     var inside = false;
     for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
         var xi = vs[i][0], yi = vs[i][1];
         var xj = vs[j][0], yj = vs[j][1];
+
         var intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
         if (intersect) inside = !inside;
     }
+
     return inside;
   };
 
@@ -378,14 +399,16 @@ function ZoneStatsPanel({ selectedZone, businessCenters, language }) {
   );
 }
 
-// --- ИЗМЕНЕННЫЙ КОМПОНЕНТ ДЛЯ ОТОБРАЖЕНИЯ СЛОЕВ ---
+// Component for handling map interactions
 function MapInteractions({
   businessCenters,
   providers,
   showHeatmap,
   showClusters,
   zoneSelectionMode,
+  setZoneSelectionMode,
   selectedZone,
+  setSelectedZone,
   filterType,
   onOrganizationClick,
   onBusinessCenterClick,
@@ -393,69 +416,164 @@ function MapInteractions({
   language,
   polygonPoints,
   setPolygonPoints,
+  finishPolygon,
   showProviders
 }) {
   const map = useMap();
-  const bcMarkersRef = useRef(null); // Слой для БЦ
-  const providersMarkersRef = useRef(null); // Слой для провайдеров
+  const markersRef = useRef(null);
   const heatmapRef = useRef(null);
   const currentPolygonRef = useRef(null);
+  const providersMarkersRef = useRef(null);
 
-  // Эффект для отображения Бизнес-Центров
   useEffect(() => {
     if (!map) return;
 
-    if (bcMarkersRef.current) map.removeLayer(bcMarkersRef.current);
-    if (heatmapRef.current) map.removeLayer(heatmapRef.current);
-
-    let filteredBusinessCenters = businessCenters;
-    if (filterType === 'kt') {
-      filteredBusinessCenters = businessCenters.filter(bc => bc.companies.some(c => c.is_kt_client));
-    } else if (filterType === 'non-kt') {
-      filteredBusinessCenters = businessCenters.filter(bc => !bc.companies.some(c => c.is_kt_client));
+    // Clear existing layers
+    if (markersRef.current) {
+      map.removeLayer(markersRef.current);
     }
-
-    if (showHeatmap) {
-      const heatmapData = filteredBusinessCenters.map(bc => [bc.latitude, bc.longitude, getPenetrationRate(bc)]);
-      heatmapRef.current = L.heatLayer(heatmapData, { radius: 25, blur: 15 }).addTo(map);
+    if (heatmapRef.current) {
+      map.removeLayer(heatmapRef.current);
     }
-
-    const markerLayer = showClusters ? L.markerClusterGroup() : L.layerGroup();
-    filteredBusinessCenters.forEach(bc => {
-      const marker = L.marker([bc.latitude, bc.longitude], { icon: getIconForBusinessCenter(bc) });
-      marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
-      markerLayer.addLayer(marker);
-    });
-    bcMarkersRef.current = markerLayer;
-    map.addLayer(bcMarkersRef.current);
-
-    return () => {
-      if (bcMarkersRef.current) map.removeLayer(bcMarkersRef.current);
-      if (heatmapRef.current) map.removeLayer(heatmapRef.current);
-    };
-  }, [map, businessCenters, showHeatmap, showClusters, filterType, language, onBusinessCenterClick, onOrganizationClick]);
-
-  // Эффект для отображения Провайдеров
-  useEffect(() => {
-    if (!map) return;
-
-    if (providersMarkersRef.current) map.removeLayer(providersMarkersRef.current);
+    if (currentPolygonRef.current) {
+      map.removeLayer(currentPolygonRef.current);
+    }
+    if (providersMarkersRef.current) {
+      map.removeLayer(providersMarkersRef.current);
+    }
 
     if (showProviders) {
-      const providerMarkerLayer = L.markerClusterGroup();
-      providers.forEach(provider => {
-        const marker = L.marker([provider.attr_location_latitude, provider.attr_location_longitude], { icon: getIconForProvider(provider) });
-        marker.bindPopup(renderProviderPopup(provider, onProviderClick, language));
-        providerMarkerLayer.addLayer(marker);
+      // Show providers layer
+      providersMarkersRef.current = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+          const count = cluster.getChildCount();
+          let c = ' marker-cluster-';
+          if (count < 10) {
+            c += 'small';
+          } else if (count < 100) {
+            c += 'medium';
+          } else {
+            c += 'large';
+          }
+          c += '';
+
+          return new L.DivIcon({
+            html: '<div><span>' + count + '</span></div>',
+            className: 'marker-cluster' + c,
+            iconSize: new L.Point(40, 40)
+          });
+        }
       });
-      providersMarkersRef.current = providerMarkerLayer;
+
+      providers.forEach(provider => {
+        const marker = L.marker([provider.attr_location_latitude, provider.attr_location_longitude], {
+          icon: getIconForProvider(provider)
+        });
+
+        marker.bindPopup(renderProviderPopup(provider, onProviderClick, language));
+        providersMarkersRef.current.addLayer(marker);
+      });
+
       map.addLayer(providersMarkersRef.current);
+    } else {
+      // Show business centers layer
+      // Filter business centers based on filterType
+      let filteredBusinessCenters = businessCenters;
+      if (filterType === 'kt') {
+        filteredBusinessCenters = businessCenters.filter(bc =>
+          bc.companies.some(company => company.is_kt_client)
+        );
+      } else if (filterType === 'non-kt') {
+        filteredBusinessCenters = businessCenters.filter(bc =>
+          !bc.companies.some(company => company.is_kt_client)
+        );
+      }
+
+      // Prepare heatmap data
+      const heatmapData = [];
+      filteredBusinessCenters.forEach(bc => {
+        const ktClientsCount = bc.companies.filter(c => c.is_kt_client).length;
+        const totalRevenue = bc.companies.reduce((sum, c) => sum + (c.accruals || 0), 0);
+        const intensity = Math.max(ktClientsCount * 0.1, totalRevenue / 1000000);
+        heatmapData.push([bc.latitude, bc.longitude, intensity]);
+      });
+
+      // Add heatmap layer
+      if (showHeatmap) {
+        heatmapRef.current = L.heatLayer(heatmapData, {
+          radius: 25,
+          blur: 15,
+          maxZoom: 17,
+          gradient: {
+            0.0: 'blue',
+            0.2: 'cyan',
+            0.4: 'lime',
+            0.6: 'yellow',
+            0.8: 'orange',
+            1.0: 'red'
+          }
+        }).addTo(map);
+      }
+
+      // Add markers
+      if (showClusters) {
+        // Create marker cluster group
+        markersRef.current = L.markerClusterGroup({
+          iconCreateFunction: function(cluster) {
+            const count = cluster.getChildCount();
+            let c = ' marker-cluster-';
+            if (count < 10) {
+              c += 'small';
+            } else if (count < 100) {
+              c += 'medium';
+            } else {
+              c += 'large';
+            }
+            c += '';
+
+            return new L.DivIcon({
+              html: '<div><span>' + count + '</span></div>',
+              className: 'marker-cluster' + c,
+              iconSize: new L.Point(40, 40)
+            });
+          }
+        });
+
+        filteredBusinessCenters.forEach(bc => {
+          const marker = L.marker([bc.latitude, bc.longitude], {
+            icon: getIconForBusinessCenter(bc)
+          });
+
+          marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
+          markersRef.current.addLayer(marker);
+        });
+
+        map.addLayer(markersRef.current);
+      } else {
+        // Add individual markers
+        filteredBusinessCenters.forEach(bc => {
+          const marker = L.marker([bc.latitude, bc.longitude], {
+            icon: getIconForBusinessCenter(bc)
+          });
+
+          marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
+          marker.addTo(map);
+        });
+      }
     }
 
     return () => {
-      if (providersMarkersRef.current) map.removeLayer(providersMarkersRef.current);
+      if (markersRef.current) {
+        map.removeLayer(markersRef.current);
+      }
+      if (heatmapRef.current) {
+        map.removeLayer(heatmapRef.current);
+      }
+      if (providersMarkersRef.current) {
+        map.removeLayer(providersMarkersRef.current);
+      }
     };
-  }, [map, providers, showProviders, language, onProviderClick]);
+  }, [map, businessCenters, providers, showHeatmap, showClusters, filterType, onOrganizationClick, onBusinessCenterClick, onProviderClick, language, showProviders]);
 
   // Handle polygon drawing
   useEffect(() => {
@@ -472,15 +590,21 @@ function MapInteractions({
     } else {
       map.off('click', handleClick);
       map.getContainer().style.cursor = '';
+      if (currentPolygonRef.current) {
+        map.removeLayer(currentPolygonRef.current);
+      }
     }
 
     return () => {
       map.off('click', handleClick);
+      map.getContainer().style.cursor = '';
     };
   }, [map, zoneSelectionMode, setPolygonPoints]);
 
   useEffect(() => {
-    if (currentPolygonRef.current) map.removeLayer(currentPolygonRef.current);
+    if (currentPolygonRef.current) {
+      map.removeLayer(currentPolygonRef.current);
+    }
     if (polygonPoints.length > 1) {
       currentPolygonRef.current = L.polygon(polygonPoints, { color: '#3b82f6', weight: 2, fillOpacity: 0.1 }).addTo(map);
     }
@@ -493,6 +617,7 @@ function MapInteractions({
   );
 }
 
+// Component for provider card modal
 function ProviderCard({ provider, isOpen, onClose, language }) {
   const { t } = useTranslation(language);
   
@@ -500,28 +625,66 @@ function ProviderCard({ provider, isOpen, onClose, language }) {
 
   return (
     <div className="provider-card-overlay" style={{
-      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 10000
     }}>
       <div className="provider-card bg-white rounded-lg shadow-xl p-6 w-[90%] max-w-lg">
         <div className="flex justify-between items-start mb-4">
-          <h2 className="text-xl font-bold text-gray-800">{provider.attr_provider_name_common}</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-3xl leading-none">×</button>
+          <h2 className="text-xl font-bold text-gray-800">
+            {provider.attr_provider_name_common}
+          </h2>
+          <button 
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 text-3xl leading-none"
+          >
+            ×
+          </button>
         </div>
+        
         <div className="space-y-3">
-          <div><strong className="text-gray-700">{t('providerName')}</strong><p className="text-gray-600">{provider.attr_provider_name}</p></div>
-          <div><strong className="text-gray-700">{t('location')}</strong><p className="text-gray-600">{provider.attr_place_name}, {provider.attr_place_country}</p></div>
-          <div className="grid grid-cols-2 gap-4">
-            <div><strong className="text-gray-700">{t('downloadSpeed')}</strong><p className="text-green-600 font-semibold text-lg">{provider.val_download_mbps.toFixed(1)} {t('mbps')}</p></div>
-            <div><strong className="text-gray-700">{t('uploadSpeed')}</strong><p className="text-blue-600 font-semibold text-lg">{provider.val_upload_mbps.toFixed(1)} {t('mbps')}</p></div>
+          <div>
+            <strong className="text-gray-700">{t('providerName')}</strong>
+            <p className="text-gray-600">{provider.attr_provider_name}</p>
           </div>
-          <div><strong className="text-gray-700">{t('coordinates')}</strong><p className="text-gray-600">{provider.attr_location_latitude.toFixed(6)}, {provider.attr_location_longitude.toFixed(6)}</p></div>
+          <div>
+            <strong className="text-gray-700">{t('location')}</strong>
+            <p className="text-gray-600">{provider.attr_place_name}, {provider.attr_place_country}</p>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <strong className="text-gray-700">{t('downloadSpeed')}</strong>
+              <p className="text-green-600 font-semibold text-lg">
+                {provider.val_download_mbps.toFixed(1)} {t('mbps')}
+              </p>
+            </div>
+            <div>
+              <strong className="text-gray-700">{t('uploadSpeed')}</strong>
+              <p className="text-blue-600 font-semibold text-lg">
+                {provider.val_upload_mbps.toFixed(1)} {t('mbps')}
+              </p>
+            </div>
+          </div>
+          <div>
+            <strong className="text-gray-700">{t('coordinates')}</strong>
+            <p className="text-gray-600">
+              {provider.attr_location_latitude.toFixed(6)}, {provider.attr_location_longitude.toFixed(6)}
+            </p>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
+// Component for organization card modal
 function OrganizationCard({ organization, isOpen, onClose, language }) {
   const { t } = useTranslation(language);
   
@@ -529,27 +692,86 @@ function OrganizationCard({ organization, isOpen, onClose, language }) {
 
   return (
     <div className="organization-card-overlay" style={{
-      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 10000
     }}>
-      <div className="organization-card bg-white rounded-lg shadow-xl p-6 w-[90%] max-w-md max-h-[80vh] overflow-y-auto">
-        <div className="flex justify-between items-start mb-4">
-          <h2 className="text-xl font-bold text-gray-800">{organization.organization_name}</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-3xl leading-none">×</button>
+      <div className="organization-card" style={{
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        padding: '24px',
+        maxWidth: '500px',
+        width: '90%',
+        maxHeight: '80vh',
+        overflowY: 'auto',
+        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+          <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold', color: '#1f2937' }}>
+            {organization.organization_name}
+          </h2>
+          <button 
+            onClick={onClose}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '24px',
+              cursor: 'pointer',
+              color: '#6b7280',
+              padding: '0',
+              marginLeft: '16px'
+            }}
+          >
+            ×
+          </button>
         </div>
-        <div className="space-y-2">
-          <div><strong className="text-gray-700">{t('bin')}:</strong> <span className="text-gray-600">{organization.bin}</span></div>
-          <div><strong className="text-gray-700">{t('address')}:</strong> <span className="text-gray-600">{organization.address}</span></div>
+        
+        <div style={{ marginBottom: '16px' }}>
+          <div style={{ marginBottom: '8px' }}>
+            <strong style={{ color: '#374151' }}>{t('bin')}</strong>
+            <span style={{ marginLeft: '8px', color: '#6b7280' }}>{organization.bin}</span>
+          </div>
+          <div style={{ marginBottom: '8px' }}>
+            <strong style={{ color: '#374151' }}>{t('address')}</strong>
+            <span style={{ marginLeft: '8px', color: '#6b7280' }}>{organization.address}</span>
+          </div>
           {organization.accruals > 0 && (
-            <div><strong className="text-gray-700">{t('accruals')}:</strong> <span className="text-green-600 font-semibold">{organization.accruals.toLocaleString()} {t('currency')}</span></div>
+            <div style={{ marginBottom: '8px' }}>
+              <strong style={{ color: '#374151' }}>{t('accruals')}</strong>
+              <span style={{ marginLeft: '8px', color: '#059669', fontWeight: '600' }}>
+                {organization.accruals.toLocaleString()} {t('currency')}
+              </span>
+            </div>
           )}
         </div>
+
         {organization.is_kt_client && organization.services && organization.services.length > 0 && (
-          <div className="mt-4">
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">{t('ktServices')}</h3>
-            <div className="flex flex-wrap gap-2">
+          <div>
+            <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#374151', marginBottom: '12px' }}>
+              {t('ktServices')}
+            </h3>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {organization.services.map((service, index) => (
-                <Badge key={index} variant="secondary">{service}</Badge>
+                <span 
+                  key={index}
+                  style={{
+                    backgroundColor: '#dbeafe',
+                    color: '#1e40af',
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    fontWeight: '500'
+                  }}
+                >
+                  {service}
+                </span>
               ))}
             </div>
           </div>
@@ -559,6 +781,7 @@ function OrganizationCard({ organization, isOpen, onClose, language }) {
   );
 }
 
+// Component for business center card modal
 function BusinessCenterCard({ businessCenter, isOpen, onClose, onOrganizationClick, language }) {
   const { t } = useTranslation(language);
   
@@ -570,40 +793,88 @@ function BusinessCenterCard({ businessCenter, isOpen, onClose, onOrganizationCli
 
   return (
     <div className="business-center-card-overlay" style={{
-      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 10000
     }}>
       <div className="business-center-card bg-white rounded-lg shadow-xl p-6 w-[90%] max-w-2xl max-h-[90vh] flex flex-col">
         <div className="flex justify-between items-start mb-4">
-          <h2 className="text-2xl font-bold text-gray-800">{businessCenter.business_center_name || businessCenter.name || 'Неизвестный БЦ'}</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-3xl leading-none">×</button>
+          <h2 className="text-2xl font-bold text-gray-800">
+            {businessCenter.business_center_name || businessCenter.name || 'Неизвестный БЦ'}
+          </h2>
+          <button 
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 text-3xl leading-none"
+          >
+            ×
+          </button>
         </div>
+        
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div><strong className="text-gray-700">{t('address')}:</strong><p className="text-gray-600">{businessCenter.address}</p></div>
-          <div><strong className="text-gray-700">{t('totalCompanies')}:</strong><p className="text-gray-600">{businessCenter.companies.length}</p></div>
-          <div><strong className="text-gray-700">{t('ktClientsCard')}:</strong><p className="text-blue-600 font-semibold">{ktClients.length}</p></div>
-          <div><strong className="text-gray-700">{t('totalRevenue')}:</strong><p className="text-green-600 font-semibold">{totalRevenue.toLocaleString()} {t('currency')}</p></div>
+          <div>
+            <strong className="text-gray-700">{t('address')}</strong>
+            <p className="text-gray-600">{businessCenter.address}</p>
+          </div>
+          <div>
+            <strong className="text-gray-700">{t('totalCompanies')}</strong>
+            <p className="text-gray-600">{businessCenter.companies.length}</p>
+          </div>
+          <div>
+            <strong className="text-gray-700">{t('ktClientsCard')}</strong>
+            <p className="text-blue-600 font-semibold">{ktClients.length}</p>
+          </div>
+          <div>
+            <strong className="text-gray-700">{t('totalRevenue')}</strong>
+            <p className="text-green-600 font-semibold">
+              {totalRevenue.toLocaleString()} {t('currency')}
+            </p>
+          </div>
         </div>
+
         <div className="flex-grow overflow-y-auto pr-2">
           {ktClients.length > 0 && (
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-gray-700 mb-3">{t('ktClientsCard')}</h3>
+              <h3 className="text-lg font-semibold text-gray-700 mb-3">
+                {t('ktClientsCard')}
+              </h3>
               <div className="space-y-2">
                 {ktClients.map((company, index) => (
-                  <div key={index} onClick={() => onOrganizationClick(company)} className="p-3 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100">
+                  <div 
+                    key={index}
+                    onClick={() => onOrganizationClick(company)}
+                    className="p-3 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors duration-200"
+                  >
                     <div className="font-medium text-gray-800">{company.organization_name}</div>
-                    {company.accruals > 0 && <div className="text-sm text-green-600">{company.accruals.toLocaleString()} {t('currency')}</div>}
+                    {company.accruals > 0 && (
+                      <div className="text-sm text-green-600">
+                        {company.accruals.toLocaleString()} {t('currency')}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
             </div>
           )}
+
           {nonKtClients.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold text-gray-700 mb-3">{t('otherCompanies')}</h3>
+              <h3 className="text-lg font-semibold text-gray-700 mb-3">
+                {t('otherCompanies')}
+              </h3>
               <div className="space-y-2">
                 {nonKtClients.map((company, index) => (
-                  <div key={index} onClick={() => onOrganizationClick(company)} className="p-3 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100">
+                  <div 
+                    key={index}
+                    onClick={() => onOrganizationClick(company)}
+                    className="p-3 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors duration-200"
+                  >
                     <div className="font-medium text-gray-800">{company.organization_name}</div>
                   </div>
                 ))}
@@ -616,40 +887,104 @@ function BusinessCenterCard({ businessCenter, isOpen, onClose, onOrganizationCli
   );
 }
 
+// Helper function to render company popup content
 function renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language) {
   const { t } = useTranslation(language);
   const ktClients = bc.companies.filter(c => c.is_kt_client);
+  const nonKtClients = bc.companies.filter(c => !c.is_kt_client);
   const totalRevenue = bc.companies.reduce((sum, c) => sum + (c.accruals || 0), 0);
   const businessCenterName = bc.business_center_name || bc.name || 'Неизвестный БЦ';
 
   return `
     <div style="min-width: 250px; max-width: 300px; font-family: sans-serif;">
-      <h3 style="margin: 0; font-size: 16px; font-weight: bold; cursor: pointer;" onclick="window.handleBusinessCenterClick('${bc.id}')">${businessCenterName}</h3>
-      <p style="margin: 4px 0; font-size: 12px; color: #6b7280;">${bc.address}</p>
-      <div style="font-size: 12px; margin-top: 8px;">
-        <div>${t('totalCompanies')}: <b>${bc.companies.length}</b></div>
-        <div>${t('ktClients')}: <b style="color: #2563eb;">${ktClients.length}</b></div>
-        <div>${t('totalRevenue')}: <b style="color: #059669;">${totalRevenue.toLocaleString()} ${t('currency')}</b></div>
+      <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 12px;">
+        <h3 style="margin: 0; font-size: 16px; font-weight: bold; color: #1f2937; cursor: pointer;" 
+            onclick="window.handleBusinessCenterClick('${bc.id}')">
+          ${businessCenterName}
+        </h3>
+        <p style="margin: 4px 0 0 0; font-size: 12px; color: #6b7280;">${bc.address}</p>
       </div>
+      
+      <div style="margin-bottom: 12px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+          <span style="font-size: 12px; color: #6b7280;">${t('totalCompanies')}</span>
+          <span style="font-size: 12px; font-weight: 600;">${bc.companies.length}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+          <span style="font-size: 12px; color: #6b7280;">${t('ktClients')}</span>
+          <span style="font-size: 12px; font-weight: 600; color: #2563eb;">${ktClients.length}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span style="font-size: 12px; color: #6b7280;">${t('totalRevenue')}</span>
+          <span style="font-size: 12px; font-weight: 600; color: #059669;">${totalRevenue.toLocaleString()} ${t('currency')}</span>
+        </div>
+      </div>
+
+      ${ktClients.length > 0 ? `
+        <div style="margin-bottom: 12px;">
+          <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #374151;">${t('ktClientsCard')}</h4>
+          <div style="max-height: 120px; overflow-y: auto;">
+            ${ktClients.map(company => `
+              <div style="padding: 4px 8px; margin-bottom: 2px; background-color: #f8fafc; border-radius: 4px; cursor: pointer; border: 1px solid #e2e8f0;"
+                   onclick="window.handleOrganizationClick('${company.bin}')">
+                <div style="font-size: 12px; font-weight: 500; color: #1f2937;">${company.organization_name}</div>
+                ${company.accruals > 0 ? `<div style="font-size: 10px; color: #059669;">${company.accruals.toLocaleString()} ${t('currency')}</div>` : ''}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
+
+      ${nonKtClients.length > 0 ? `
+        <div>
+          <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #374151;">${t('otherCompanies')}</h4>
+          <div style="max-height: 100px; overflow-y: auto;">
+            ${nonKtClients.map(company => `
+              <div style="padding: 4px 8px; margin-bottom: 2px; background-color: #f8fafc; border-radius: 4px; cursor: pointer; border: 1px solid #e2e8f0;"
+                   onclick="window.handleOrganizationClick('${company.bin}')">
+                <div style="font-size: 12px; font-weight: 500; color: #1f2937;">${company.organization_name}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
     </div>
   `;
 }
 
+// Helper function to render provider popup content
 function renderProviderPopup(provider, onProviderClick, language) {
   const { t } = useTranslation(language);
+
   return `
-    <div style="min-width: 200px; font-family: sans-serif;">
-      <h3 style="margin: 0; font-size: 16px; font-weight: bold; cursor: pointer;" onclick="window.handleProviderClick('${provider.attr_provider_name}')">${provider.attr_provider_name_common}</h3>
-      <div style="font-size: 12px; margin-top: 8px;">
-        <div>${t('downloadSpeed')}: <b style="color: #059669;">${provider.val_download_mbps.toFixed(1)} ${t('mbps')}</b></div>
-        <div>${t('uploadSpeed')}: <b style="color: #2563eb;">${provider.val_upload_mbps.toFixed(1)} ${t('mbps')}</b></div>
+    <div style="min-width: 200px; max-width: 250px; font-family: sans-serif;">
+      <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 12px;">
+        <h3 style="margin: 0; font-size: 16px; font-weight: bold; color: #1f2937; cursor: pointer;" 
+            onclick="window.handleProviderClick('${provider.attr_provider_name}')">
+          ${provider.attr_provider_name_common}
+        </h3>
+        <p style="margin: 4px 0 0 0; font-size: 12px; color: #6b7280;">${provider.attr_provider_name}</p>
+      </div>
+      
+      <div style="margin-bottom: 12px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+          <span style="font-size: 12px; color: #6b7280;">${t('downloadSpeed')}</span>
+          <span style="font-size: 12px; font-weight: 600; color: #059669;">${provider.val_download_mbps.toFixed(1)} ${t('mbps')}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+          <span style="font-size: 12px; color: #6b7280;">${t('uploadSpeed')}</span>
+          <span style="font-size: 12px; font-weight: 600; color: #2563eb;">${provider.val_upload_mbps.toFixed(1)} ${t('mbps')}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span style="font-size: 12px; color: #6b7280;">${t('location')}</span>
+          <span style="font-size: 12px; font-weight: 600;">${provider.attr_place_name}</span>
+        </div>
       </div>
     </div>
   `;
 }
 
-// --- НАЧАЛО ОСТАТКА ФАЙЛА ---
-
+// Main App component
 function App() {
   const [businessCenters, setBusinessCenters] = useState([]);
   const [providers, setProviders] = useState([]);
@@ -783,6 +1118,7 @@ function App() {
                   showClusters={showClusters}
                   zoneSelectionMode={zoneSelectionMode}
                   selectedZone={selectedZone}
+                  setSelectedZone={setSelectedZone}
                   filterType={filterType}
                   onOrganizationClick={handleOrganizationClick}
                   onBusinessCenterClick={handleBusinessCenterClick}
@@ -790,6 +1126,7 @@ function App() {
                   language={language}
                   polygonPoints={polygonPoints}
                   setPolygonPoints={setPolygonPoints}
+                  finishPolygon={finishPolygon}
                   showProviders={showProviders}
                 />
               </MapContainer>
@@ -797,7 +1134,7 @@ function App() {
               <OrganizationCard 
                 organization={selectedOrganization}
                 isOpen={!!selectedOrganization}
-                onClose={( ) => setSelectedOrganization(null)}
+                onClose={() => setSelectedOrganization(null)}
                 language={language}
               />
               
