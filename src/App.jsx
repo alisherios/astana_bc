@@ -399,7 +399,6 @@ function ZoneStatsPanel({ selectedZone, businessCenters, language }) {
   );
 }
 
-// Component for handling map interactions
 function MapInteractions({
   businessCenters,
   providers,
@@ -419,6 +418,126 @@ function MapInteractions({
   finishPolygon,
   showProviders
 }) {
+  const map = useMap();
+  const bcLayerRef = useRef(null);      // Слой для Бизнес-Центров
+  const heatmapLayerRef = useRef(null); // Слой для тепловой карты
+  const providersLayerRef = useRef(null); // Слой для Провайдеров
+  const polygonRef = useRef(null);      // Слой для полигона выделения
+
+  // Эффект для управления слоем БИЗНЕС-ЦЕНТРОВ
+  useEffect(() => {
+    // Удаляем старые слои БЦ, если они есть
+    if (bcLayerRef.current) {
+      map.removeLayer(bcLayerRef.current);
+    }
+    if (heatmapLayerRef.current) {
+      map.removeLayer(heatmapLayerRef.current);
+    }
+
+    // Фильтруем бизнес-центры
+    let filteredBusinessCenters = businessCenters;
+    if (filterType === 'kt') {
+      filteredBusinessCenters = businessCenters.filter(bc =>
+        bc.companies.some(company => company.is_kt_client)
+      );
+    } else if (filterType === 'non-kt') {
+      filteredBusinessCenters = businessCenters.filter(bc =>
+        !bc.companies.some(company => company.is_kt_client)
+      );
+    }
+
+    // Добавляем тепловую карту, если включено
+    if (showHeatmap) {
+      const heatmapData = filteredBusinessCenters.map(bc => {
+        const intensity = getPenetrationRate(bc); // Или другая логика интенсивности
+        return [bc.latitude, bc.longitude, intensity];
+      });
+      heatmapLayerRef.current = L.heatLayer(heatmapData, { radius: 25 }).addTo(map);
+    }
+
+    // Создаем маркеры для БЦ
+    const markers = L.markerClusterGroup();
+    filteredBusinessCenters.forEach(bc => {
+      const marker = L.marker([bc.latitude, bc.longitude], { icon: getIconForBusinessCenter(bc) });
+      marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
+      markers.addLayer(marker);
+    });
+
+    // Выбираем, как отображать маркеры: кластерами или по отдельности
+    if (showClusters) {
+      bcLayerRef.current = markers;
+    } else {
+      // Чтобы показать маркеры без кластеризации, извлекаем их из группы
+      bcLayerRef.current = L.layerGroup(markers.getLayers());
+    }
+    
+    map.addLayer(bcLayerRef.current);
+
+    // Функция очистки при размонтировании или изменении зависимостей
+    return () => {
+      if (bcLayerRef.current) {
+        map.removeLayer(bcLayerRef.current);
+      }
+      if (heatmapLayerRef.current) {
+        map.removeLayer(heatmapLayerRef.current);
+      }
+    };
+  }, [map, businessCenters, showHeatmap, showClusters, filterType, language, onBusinessCenterClick, onOrganizationClick]);
+
+  // Эффект для управления слоем ПРОВАЙДЕРОВ
+  useEffect(() => {
+    // Удаляем старый слой провайдеров, если он есть
+    if (providersLayerRef.current) {
+      map.removeLayer(providersLayerRef.current);
+    }
+
+    // Если кнопка "Показать провайдеров" активна
+    if (showProviders) {
+      const providerMarkers = L.markerClusterGroup();
+      providers.forEach(provider => {
+        const marker = L.marker([provider.attr_location_latitude, provider.attr_location_longitude], { icon: getIconForProvider(provider) });
+        marker.bindPopup(renderProviderPopup(provider, onProviderClick, language));
+        providerMarkers.addLayer(marker);
+      });
+      providersLayerRef.current = providerMarkers;
+      map.addLayer(providersLayerRef.current);
+    }
+
+    // Функция очистки
+    return () => {
+      if (providersLayerRef.current) {
+        map.removeLayer(providersLayerRef.current);
+      }
+    };
+  }, [map, providers, showProviders, language, onProviderClick]);
+
+  // Эффект для рисования полигона
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (!zoneSelectionMode) return;
+      setPolygonPoints(prev => [...prev, [e.latlng.lat, e.latlng.lng]]);
+    };
+    map.on('click', handleClick);
+    map.getContainer().style.cursor = zoneSelectionMode ? 'crosshair' : '';
+    
+    return () => map.off('click', handleClick);
+  }, [map, zoneSelectionMode, setPolygonPoints]);
+
+  useEffect(() => {
+    if (polygonRef.current) {
+      map.removeLayer(polygonRef.current);
+    }
+    if (polygonPoints.length > 1) {
+      polygonRef.current = L.polygon(polygonPoints, { color: '#3b82f6', weight: 2, fillOpacity: 0.1 }).addTo(map);
+    }
+  }, [map, polygonPoints]);
+
+  return (
+    selectedZone && selectedZone.type === 'polygon' && (
+      <Polygon positions={selectedZone.points} color="#3b82f6" weight={2} fillOpacity={0.1} />
+    )
+  );
+}
   const map = useMap();
   const markersRef = useRef(null);
   const heatmapRef = useRef(null);
