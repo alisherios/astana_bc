@@ -895,7 +895,7 @@ function renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, lang
   const totalRevenue = bc.companies.reduce((sum, c) => sum + (c.accruals || 0), 0);
   const businessCenterName = bc.business_center_name || bc.name || 'Неизвестный БЦ';
 
-  return 
+  return `
     <div style="min-width: 250px; max-width: 300px; font-family: sans-serif;">
       <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 12px;">
         <h3 style="margin: 0; font-size: 16px; font-weight: bold; color: #1f2937; cursor: pointer;" 
@@ -920,43 +920,43 @@ function renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, lang
         </div>
       </div>
 
-      ${ktClients.length > 0 ? 
+      ${ktClients.length > 0 ? `
         <div style="margin-bottom: 12px;">
           <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #374151;">${t('ktClientsCard')}</h4>
           <div style="max-height: 120px; overflow-y: auto;">
-            ${ktClients.map(company => 
+            ${ktClients.map(company => `
               <div style="padding: 4px 8px; margin-bottom: 2px; background-color: #f8fafc; border-radius: 4px; cursor: pointer; border: 1px solid #e2e8f0;"
                    onclick="window.handleOrganizationClick('${company.bin}')">
                 <div style="font-size: 12px; font-weight: 500; color: #1f2937;">${company.organization_name}</div>
-                ${company.accruals > 0 ? <div style="font-size: 10px; color: #059669;">${company.accruals.toLocaleString()} ${t('currency')}</div> : ''}
+                ${company.accruals > 0 ? `<div style="font-size: 10px; color: #059669;">${company.accruals.toLocaleString()} ${t('currency')}</div>` : ''}
               </div>
-            ).join('')}
+            `).join('')}
           </div>
         </div>
-       : ''}
+      ` : ''}
 
-      ${nonKtClients.length > 0 ? 
+      ${nonKtClients.length > 0 ? `
         <div>
           <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #374151;">${t('otherCompanies')}</h4>
           <div style="max-height: 100px; overflow-y: auto;">
-            ${nonKtClients.map(company => 
+            ${nonKtClients.map(company => `
               <div style="padding: 4px 8px; margin-bottom: 2px; background-color: #f8fafc; border-radius: 4px; cursor: pointer; border: 1px solid #e2e8f0;"
                    onclick="window.handleOrganizationClick('${company.bin}')">
                 <div style="font-size: 12px; font-weight: 500; color: #1f2937;">${company.organization_name}</div>
               </div>
-            ).join('')}
+            `).join('')}
           </div>
         </div>
-       : ''}
+      ` : ''}
     </div>
-  ;
+  `;
 }
 
 // Helper function to render provider popup content
 function renderProviderPopup(provider, onProviderClick, language) {
   const { t } = useTranslation(language);
 
-  return 
+  return `
     <div style="min-width: 200px; max-width: 250px; font-family: sans-serif;">
       <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 12px;">
         <h3 style="margin: 0; font-size: 16px; font-weight: bold; color: #1f2937; cursor: pointer;" 
@@ -981,7 +981,7 @@ function renderProviderPopup(provider, onProviderClick, language) {
         </div>
       </div>
     </div>
-  ;
+  `;
 }
 
 // Main App component
