@@ -259,7 +259,15 @@ function MapControls({
         </Button>
       </div>
 
-      <div className="layer-controls" style={{ marginBottom: '10px' }}>
+      <div className="layer-controls" style={{ marginBottom: '10px', display: 'flex', gap: '10px' }}>
+        <Button
+          onClick={() => setShowBusinessCenters(!showBusinessCenters)}
+          variant={showBusinessCenters ? "default" : "outline"}
+          className="flex items-center gap-2"
+        >
+          <Building className="w-4 h-4" />
+          {showBusinessCenters ? t('hideBusinessCenters') : t('showBusinessCenters')}
+        </Button>
         <Button
           onClick={() => setShowProviders(!showProviders)}
           variant={showProviders ? "default" : "outline"}
@@ -269,6 +277,7 @@ function MapControls({
           {showProviders ? t('hideProviders') : t('showProviders')}
         </Button>
       </div>
+
 
       <Button
         onClick={() => setShowHeatmap(!showHeatmap)}
@@ -998,7 +1007,9 @@ function App() {
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [language, setLanguage] = useState('ru');
   const [polygonPoints, setPolygonPoints] = useState([]);
-  const [showProviders, setShowProviders] = useState(false);
+  const [showBusinessCenters, setShowBusinessCenters] = useState(true); // По умолчанию включены
+  const [showProviders, setShowProviders] = useState(true); // По умолчанию включены
+
 
   useEffect(() => {
     setBusinessCenters(data);
