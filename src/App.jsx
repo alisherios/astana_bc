@@ -16,66 +16,24 @@ import providersData from './assets/providers_data.json';
 
 // Fix for default markers in react-leaflet
 delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-});
 
-// Custom icon for KT clients
-const ktClientIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+// Custom icon for Business Centers (Building Icon)
+const businessCenterIcon = new L.Icon({
+  iconUrl: '/home/ubuntu/upload/search_images/HRlaAIgTXMkA.png',
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32],
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
-// Default icon for regular business centers
-const defaultIcon = new L.Icon({
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
-const lowPenetrationIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
-// Provider icons based on speed
-const highSpeedProviderIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [20, 32],
-  iconAnchor: [10, 32],
-  popupAnchor: [1, -28],
   shadowSize: [32, 32]
 });
 
-const mediumSpeedProviderIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
+// Custom icon for Providers (Wi-Fi Icon)
+const providerIcon = new L.Icon({
+  iconUrl: '/home/ubuntu/upload/search_images/FbjarKWJWTam.png',
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32],
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [20, 32],
-  iconAnchor: [10, 32],
-  popupAnchor: [1, -28],
-  shadowSize: [32, 32]
-});
-
-const lowSpeedProviderIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-  iconSize: [20, 32],
-  iconAnchor: [10, 32],
-  popupAnchor: [1, -28],
   shadowSize: [32, 32]
 });
 
@@ -86,22 +44,13 @@ function getPenetrationRate(bc) {
 }
 
 function getIconForBusinessCenter(bc) {
-  const penetration = getPenetrationRate(bc);
-  if (penetration > 0 && penetration < 30) {
-    return lowPenetrationIcon;
-  }
-  return defaultIcon;
+  // For now, all business centers will use the same building icon
+  return businessCenterIcon;
 }
 
 function getIconForProvider(provider) {
-  const downloadSpeed = provider.val_download_mbps;
-  if (downloadSpeed >= 100) {
-    return highSpeedProviderIcon;
-  } else if (downloadSpeed >= 50) {
-    return mediumSpeedProviderIcon;
-  } else {
-    return lowSpeedProviderIcon;
-  }
+  // All providers will use the same Wi-Fi icon
+  return providerIcon;
 }
 
 function Navigation({ language, setLanguage }) {
@@ -180,12 +129,8 @@ function MapLegend({ language, showProviders, showBusinessCenters }) {
           <>
             <div className="text-xs font-semibold text-gray-700 mb-1">Бизнес-центры:</div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-gray-500 rounded-full"></div>
-              <span className="text-xs text-gray-600">{t('regularMarkers')}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-yellow-500 rounded-full"></div>
-              <span className="text-xs text-gray-600">{t('lowPenetrationMarkers')}</span>
+              <img src="/home/ubuntu/upload/search_images/HRlaAIgTXMkA.png" alt="Building Icon" className="w-4 h-4" />
+              <span className="text-xs text-gray-600">{t('businessCenterMarkers')}</span>
             </div>
           </>
         )}
@@ -194,16 +139,8 @@ function MapLegend({ language, showProviders, showBusinessCenters }) {
           <>
             <div className="text-xs font-semibold text-gray-700 mb-1 mt-3">Провайдеры:</div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <span className="text-xs text-gray-600">{t('highSpeedProviders')}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-              <span className="text-xs text-gray-600">{t('mediumSpeedProviders')}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-              <span className="text-xs text-gray-600">{t('lowSpeedProviders')}</span>
+              <img src="/home/ubuntu/upload/search_images/FbjarKWJWTam.png" alt="Wi-Fi Icon" className="w-4 h-4" />
+              <span className="text-xs text-gray-600">{t('providerMarkers')}</span>
             </div>
           </>
         )}
