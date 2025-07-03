@@ -164,7 +164,7 @@ function Navigation({ language, setLanguage }) {
 }
 
 // Component for map legend
-function MapLegend({ language, showProviders }) {
+function MapLegend({ language, showProviders, showBusinessCenters }) {
   const { t } = useTranslation(language);
   
   return (
@@ -176,8 +176,9 @@ function MapLegend({ language, showProviders }) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
-        {!showProviders ? (
+        {showBusinessCenters && (
           <>
+            <div className="text-xs font-semibold text-gray-700 mb-1">Бизнес-центры:</div>
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 bg-gray-500 rounded-full"></div>
               <span className="text-xs text-gray-600">{t('regularMarkers')}</span>
@@ -187,8 +188,11 @@ function MapLegend({ language, showProviders }) {
               <span className="text-xs text-gray-600">{t('lowPenetrationMarkers')}</span>
             </div>
           </>
-        ) : (
+        )}
+        
+        {showProviders && (
           <>
+            <div className="text-xs font-semibold text-gray-700 mb-1 mt-3">Провайдеры:</div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>
               <span className="text-xs text-gray-600">{t('highSpeedProviders')}</span>
@@ -224,7 +228,9 @@ function MapControls({
   polygonPoints,
   finishPolygon,
   showProviders,
-  setShowProviders
+  setShowProviders,
+  showBusinessCenters,
+  setShowBusinessCenters
 }) {
   const { t } = useTranslation(language);
 
@@ -259,7 +265,15 @@ function MapControls({
         </Button>
       </div>
 
-      <div className="layer-controls" style={{ marginBottom: '10px' }}>
+      <div className="layer-controls" style={{ marginBottom: '10px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+        <Button
+          onClick={() => setShowBusinessCenters(!showBusinessCenters)}
+          variant={showBusinessCenters ? "default" : "outline"}
+          className="flex items-center gap-2"
+        >
+          <Building className="w-4 h-4" />
+          {showBusinessCenters ? 'Скрыть БЦ' : 'Показать БЦ'}
+        </Button>
         <Button
           onClick={() => setShowProviders(!showProviders)}
           variant={showProviders ? "default" : "outline"}
@@ -417,67 +431,28 @@ function MapInteractions({
   polygonPoints,
   setPolygonPoints,
   finishPolygon,
-  showProviders
+  showProviders,
+  showBusinessCenters
 }) {
   const map = useMap();
-  const markersRef = useRef(null);
+  const businessCentersLayerRef = useRef(null);
+  const providersLayerRef = useRef(null);
   const heatmapRef = useRef(null);
   const currentPolygonRef = useRef(null);
-  const providersMarkersRef = useRef(null);
 
   useEffect(() => {
     if (!map) return;
 
-    // Clear existing layers
-    if (markersRef.current) {
-      map.removeLayer(markersRef.current);
+    // --- Слой Бизнес-центров ---
+    if (businessCentersLayerRef.current) {
+      map.removeLayer(businessCentersLayerRef.current);
     }
     if (heatmapRef.current) {
       map.removeLayer(heatmapRef.current);
     }
-    if (currentPolygonRef.current) {
-      map.removeLayer(currentPolygonRef.current);
-    }
-    if (providersMarkersRef.current) {
-      map.removeLayer(providersMarkersRef.current);
-    }
 
-    if (showProviders) {
-      // Show providers layer
-      providersMarkersRef.current = L.markerClusterGroup({
-        iconCreateFunction: function(cluster) {
-          const count = cluster.getChildCount();
-          let c = ' marker-cluster-';
-          if (count < 10) {
-            c += 'small';
-          } else if (count < 100) {
-            c += 'medium';
-          } else {
-            c += 'large';
-          }
-          c += '';
-
-          return new L.DivIcon({
-            html: '<div><span>' + count + '</span></div>',
-            className: 'marker-cluster' + c,
-            iconSize: new L.Point(40, 40)
-          });
-        }
-      });
-
-      providers.forEach(provider => {
-        const marker = L.marker([provider.attr_location_latitude, provider.attr_location_longitude], {
-          icon: getIconForProvider(provider)
-        });
-
-        marker.bindPopup(renderProviderPopup(provider, onProviderClick, language));
-        providersMarkersRef.current.addLayer(marker);
-      });
-
-      map.addLayer(providersMarkersRef.current);
-    } else {
-      // Show business centers layer
-      // Filter business centers based on filterType
+    if (showBusinessCenters) {
+      // Логика фильтрации бизнес-центров
       let filteredBusinessCenters = businessCenters;
       if (filterType === 'kt') {
         filteredBusinessCenters = businessCenters.filter(bc =>
@@ -489,17 +464,15 @@ function MapInteractions({
         );
       }
 
-      // Prepare heatmap data
-      const heatmapData = [];
-      filteredBusinessCenters.forEach(bc => {
-        const ktClientsCount = bc.companies.filter(c => c.is_kt_client).length;
-        const totalRevenue = bc.companies.reduce((sum, c) => sum + (c.accruals || 0), 0);
-        const intensity = Math.max(ktClientsCount * 0.1, totalRevenue / 1000000);
-        heatmapData.push([bc.latitude, bc.longitude, intensity]);
-      });
-
-      // Add heatmap layer
+      // Логика для тепловой карты
       if (showHeatmap) {
+        const heatmapData = filteredBusinessCenters.map(bc => {
+          const ktClientsCount = bc.companies.filter(c => c.is_kt_client).length;
+          const totalRevenue = bc.companies.reduce((sum, c) => sum + (c.accruals || 0), 0);
+          const intensity = Math.max(ktClientsCount * 0.1, totalRevenue / 1000000);
+          return [bc.latitude, bc.longitude, intensity];
+        });
+        
         heatmapRef.current = L.heatLayer(heatmapData, {
           radius: 25,
           blur: 15,
@@ -515,10 +488,9 @@ function MapInteractions({
         }).addTo(map);
       }
 
-      // Add markers
+      // Логика для кластеризации или отдельных маркеров
       if (showClusters) {
-        // Create marker cluster group
-        markersRef.current = L.markerClusterGroup({
+        businessCentersLayerRef.current = L.markerClusterGroup({
           iconCreateFunction: function(cluster) {
             const count = cluster.getChildCount();
             let c = ' marker-cluster-';
@@ -538,42 +510,77 @@ function MapInteractions({
             });
           }
         });
-
-        filteredBusinessCenters.forEach(bc => {
-          const marker = L.marker([bc.latitude, bc.longitude], {
-            icon: getIconForBusinessCenter(bc)
-          });
-
-          marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
-          markersRef.current.addLayer(marker);
-        });
-
-        map.addLayer(markersRef.current);
       } else {
-        // Add individual markers
-        filteredBusinessCenters.forEach(bc => {
-          const marker = L.marker([bc.latitude, bc.longitude], {
-            icon: getIconForBusinessCenter(bc)
-          });
-
-          marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
-          marker.addTo(map);
-        });
+        businessCentersLayerRef.current = L.layerGroup();
       }
+
+      filteredBusinessCenters.forEach(bc => {
+        const marker = L.marker([bc.latitude, bc.longitude], { icon: getIconForBusinessCenter(bc) });
+        marker.bindPopup(renderCompanyPopup(bc, onOrganizationClick, onBusinessCenterClick, language));
+        businessCentersLayerRef.current.addLayer(marker);
+      });
+
+      map.addLayer(businessCentersLayerRef.current);
     }
 
+    // --- Слой Провайдеров ---
+    if (providersLayerRef.current) {
+      map.removeLayer(providersLayerRef.current);
+    }
+
+    if (showProviders) {
+      providersLayerRef.current = L.markerClusterGroup({
+        iconCreateFunction: function(cluster) {
+          const count = cluster.getChildCount();
+          let c = ' marker-cluster-';
+          if (count < 10) {
+            c += 'small';
+          } else if (count < 100) {
+            c += 'medium';
+          } else {
+            c += 'large';
+          }
+          c += '';
+
+          return new L.DivIcon({
+            html: '<div><span>' + count + '</span></div>',
+            className: 'marker-cluster' + c,
+            iconSize: new L.Point(40, 40)
+          });
+        }
+      });
+      
+      providers.forEach(provider => {
+        const marker = L.marker([provider.attr_location_latitude, provider.attr_location_longitude], {
+          icon: getIconForProvider(provider)
+        });
+        marker.bindPopup(renderProviderPopup(provider, onProviderClick, language));
+        providersLayerRef.current.addLayer(marker);
+      });
+
+      map.addLayer(providersLayerRef.current);
+    }
+
+    // Функция очистки
     return () => {
-      if (markersRef.current) {
-        map.removeLayer(markersRef.current);
-      }
-      if (heatmapRef.current) {
-        map.removeLayer(heatmapRef.current);
-      }
-      if (providersMarkersRef.current) {
-        map.removeLayer(providersMarkersRef.current);
-      }
+      if (businessCentersLayerRef.current) map.removeLayer(businessCentersLayerRef.current);
+      if (providersLayerRef.current) map.removeLayer(providersLayerRef.current);
+      if (heatmapRef.current) map.removeLayer(heatmapRef.current);
     };
-  }, [map, businessCenters, providers, showHeatmap, showClusters, filterType, onOrganizationClick, onBusinessCenterClick, onProviderClick, language, showProviders]);
+  }, [
+    map, 
+    businessCenters, 
+    providers, 
+    showBusinessCenters,
+    showProviders, 
+    showHeatmap, 
+    showClusters, 
+    filterType, 
+    language, 
+    onOrganizationClick, 
+    onBusinessCenterClick, 
+    onProviderClick
+  ]);
 
   // Handle polygon drawing
   useEffect(() => {
@@ -998,7 +1005,9 @@ function App() {
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [language, setLanguage] = useState('ru');
   const [polygonPoints, setPolygonPoints] = useState([]);
-  const [showProviders, setShowProviders] = useState(false);
+  // Два независимых состояния для управления слоями
+  const [showBusinessCenters, setShowBusinessCenters] = useState(true); // По умолчанию включены
+  const [showProviders, setShowProviders] = useState(true); // По умолчанию включены
 
   useEffect(() => {
     setBusinessCenters(data);
@@ -1091,9 +1100,15 @@ function App() {
                 finishPolygon={finishPolygon}
                 showProviders={showProviders}
                 setShowProviders={setShowProviders}
+                showBusinessCenters={showBusinessCenters}
+                setShowBusinessCenters={setShowBusinessCenters}
               />
               
-              <MapLegend language={language} showProviders={showProviders} />
+              <MapLegend 
+                language={language} 
+                showProviders={showProviders} 
+                showBusinessCenters={showBusinessCenters}
+              />
               
               <ZoneStatsPanel 
                 selectedZone={selectedZone}
@@ -1128,6 +1143,7 @@ function App() {
                   setPolygonPoints={setPolygonPoints}
                   finishPolygon={finishPolygon}
                   showProviders={showProviders}
+                  showBusinessCenters={showBusinessCenters}
                 />
               </MapContainer>
               
@@ -1162,3 +1178,4 @@ function App() {
 }
 
 export default App;
+
